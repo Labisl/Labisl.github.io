@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Labisl Markdown</title>
 
     <style>
@@ -16,6 +17,7 @@
             height: 400px;
             font-size: 16px;
             padding: 10px;
+            resize: none;
         }
 
         #preview {
@@ -25,18 +27,31 @@
             padding: 10px;
             overflow: auto;
         }
+
+        a {
+            color: dodgerblue;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-
 <body>
 
-<textarea id="editor">
-# Hello!
+<textarea id="editor"># Hello!
 
 Write **Markdown** here.
 Whatever you write is completely private!
 
 [Google](https://google.com)
+
+*Italic*
+
+**Bold**
+
+### Small Heading
 </textarea>
 
 <div id="preview"></div>
@@ -44,17 +59,36 @@ Whatever you write is completely private!
 <script>
 function markdown(text) {
     return text
-        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-        .replace(/\*\*(.*?)\*\*/gim, "<b>$1</b>")
-        .replace(/\*(.*?)\*/gim, "<i>$1</i>")
-        .replace(/\n/gim, "<br>");
+        // Escape HTML
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+
+        // Headings
+        .replace(/^### (.*)$/gim, "<h3>$1</h3>")
+        .replace(/^## (.*)$/gim, "<h2>$1</h2>")
+        .replace(/^# (.*)$/gim, "<h1>$1</h1>")
+
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+
+        // Italic
+        .replace(/\*(.*?)\*/g, "<i>$1</i>")
+
+        // Links
+        .replace(
+            /\[(.*?)\]\((https?:\/\/.*?)\)/g,
+            '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+        )
+
+        // New lines
+        .replace(/\n/g, "<br>");
 }
 
 function update() {
-    document.getElementById("preview").innerHTML =
-        markdown(document.getElementById("editor").value);
+    const editor = document.getElementById("editor");
+    const preview = document.getElementById("preview");
+    preview.innerHTML = markdown(editor.value);
 }
 
 document.getElementById("editor").addEventListener("input", update);
