@@ -58,42 +58,34 @@ Whatever you write is completely private!
 
 <script>
 function markdown(text) {
-    return text
-        // Escape HTML
+    // Escape HTML first
+    text = text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
+        .replace(/>/g, "&gt;");
 
-        // Headings
-        .replace(/^### (.*)$/gim, "<h3>$1</h3>")
-        .replace(/^## (.*)$/gim, "<h2>$1</h2>")
-        .replace(/^# (.*)$/gim, "<h1>$1</h1>")
+    // Headings
+    text = text.replace(/^### (.*)$/gm, "<h3>$1</h3>");
+    text = text.replace(/^## (.*)$/gm, "<h2>$1</h2>");
+    text = text.replace(/^# (.*)$/gm, "<h1>$1</h1>");
 
-        // Bold
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+    // Bold
+    text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
-        // Italic
-        .replace(/\*(.*?)\*/g, "<i>$1</i>")
+    // Italic
+    text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
 
-        // Links
-        .replace(
-            /\[(.*?)\]\((https?:\/\/.*?)\)/g,
-            '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-        )
+    // Links
+    text = text.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
 
-        // New lines
-        .replace(/\n/g, "<br>");
+    // Line breaks
+    text = text.replace(/\n/g, "<br>");
+
+    return text;
 }
-
-function update() {
-    const editor = document.getElementById("editor");
-    const preview = document.getElementById("preview");
-    preview.innerHTML = markdown(editor.value);
-}
-
-document.getElementById("editor").addEventListener("input", update);
-
-update();
 </script>
 
 </body>
