@@ -58,47 +58,146 @@ Whatever you write is completely private!
 <div id="preview"></div>
 
 <script>
-function markdown(text) {
+function markdown(text){
+
+    // Store code blocks first
+    const codeBlocks = [];
+    text = text.replace(/```([\s\S]*?)```/g,function(match,code){
+        codeBlocks.push("<pre><code>"+code.replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</code></pre>");
+        return "%%CODE"+(codeBlocks.length-1)+"%%";
+    });
 
     // Escape HTML
-    text = text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+    text=text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 
-    // Links (do BEFORE italic/bold)
-    text = text.replace(
-        /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    // Restore code blocks
+    text=text.replace(/%%CODE(\d+)%%/g,function(_,n){
+        return codeBlocks[n];
+    });
+
+    // Escape markdown symbols
+    text=text.replace(/\\([\\`*_{}\[\]()#+\-.!|>])/g,"&#92;$1");
+
+    // Images
+    text=text.replace(
+        /!\[([^\]]*)\]\((.*?)\)/g,
+        '<img src="$2" alt="$1">'
+    );
+
+    // Links
+    text=text.replace(
+        /\[([^\]]+)\]\((.*?)\)/g,
+        '<a href="$2" target="_blank">$1</a>'
     );
 
     // Headings
-    text = text.replace(/^### (.*)$/gm, "<h3>$1</h3>");
-    text = text.replace(/^## (.*)$/gm, "<h2>$1</h2>");
-    text = text.replace(/^# (.*)$/gm, "<h1>$1</h1>");
+    for(let i=6;i>=1;i--){
+        const hashes="#".repeat(i);
+        text=text.replace(
+            new RegExp("^"+hashes+" (.*)$","gm"),
+            "<h"+i+">$1</h"+i+">"
+        );
+    }
+
+    // Horizontal rules
+    text=text.replace(/^(\*\*\*|---|___)$/gm,"<hr>");
+
+    // Blockquotes
+    text=text.replace(/^> (.*)$/gm,"<blockquote>$1</blockquote>");
+
+    // Bold Italic
+    text=text.replace(/\*\*\*(.*?)\*\*\*/g,"<strong><em>$1</em></strong>");
 
     // Bold
-    text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    text=text.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>");
 
     // Italic
-    text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+    text=text.replace(/\*(.*?)\*/g,"<em>$1</em>");
 
-    // New lines
-    text = text.replace(/\n/g, "<br>");
+    // Inline code
+    text=text.replace(/`([^`]+)`/g,"<code>$1</code>");
+
+    // Checkboxes
+    text=text.replace(/^- \[x\] (.*)$/gim,'<input type="checkbox" checked disabled> $1');
+    text=text.replace(/^- \[ \] (.*)$/gim,'<input type="checkbox" disabled> $1');
+
+    // Bullet lists
+    text=text.replace(/(?:^- .*$(?:\n|$))+?/gm,function(list){
+        return "<ul>"+list.replace(/^- (.*)$/gm,"<li>$1</li>")+"</ul>";
+    });
+
+    // Numbered lists
+    text=text.replace(/(?:^\d+\. .*$(?:\n|$))+?/gm,function(list){
+        return "<ol>"+list.replace(/^\d+\. (.*)$/gm,"<li>$1</li>")+"</ol>";
+    });
+
+    // Tables
+    text=text.replace(
+        /((?:\|.*\|\n)+)/g,
+        function(table){
+
+            const rows=table.trim().split("\n");
+
+            if(rows.length<2) return table;
+
+            let html="<table border='1' cellspacing='0' cellpadding='5'>";
+
+            rows.forEach(function(row,index){
+
+                if(index==1 && /^\|?[- :|]+\|?$/.test(row)) return;
+
+                const cells=row.split("|").slice(1,-1);
+
+                html+="<tr>";
+
+                cells.forEach(function(cell){
+
+                    if(index==0)
+                        html+="<th>"+cell.trim()+"</th>";
+                    else
+                        html+="<td>"+cell.trim()+"</td>";
+
+                });
+
+                html+="</tr>";
+
+            });
+
+            html+="</table>";
+
+            return html;
+
+        }
+    );
+
+    // Paragraphs
+    text=text.split(/\n\s*\n/).map(function(block){
+
+        if(block.match(/^<(h|ul|ol|pre|blockquote|table|hr)/))
+            return block;
+
+        return "<p>"+block+"</p>";
+
+    }).join("");
+
+    // Single newlines
+    text=text.replace(/\n/g,"<br>");
 
     return text;
 }
 
-const editor = document.getElementById("editor");
-const preview = document.getElementById("preview");
+const editor=document.getElementById("editor");
+const preview=document.getElementById("preview");
 
-function updatePreview() {
-    preview.innerHTML = markdown(editor.value);
+function updatePreview(){
+    preview.innerHTML=markdown(editor.value);
 }
 
-editor.addEventListener("input", updatePreview);
+editor.addEventListener("input",updatePreview);
 
-// Initial render
 updatePreview();
 </script>
 
