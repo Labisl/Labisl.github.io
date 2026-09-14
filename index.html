@@ -30,6 +30,19 @@
             max-width: 500px;
         }
         
+        .visit-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 215, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         h1 {
             color: #333;
             margin-bottom: 20px;
@@ -64,11 +77,36 @@
     </style>
 </head>
 <body>
+    <div class="visit-counter">Website visits: <span id="visit-count">0</span></div>
     <div class="container">
         <h1>labisl</h1>
         <h2>A cool website of.. ..stuff</h2>
         <p>This website is currently under construction, but you can view my projects!</p>
         <a href="Downloads/" class="btn">Browse projects</a>
     </div>
+
+    <script>
+        // Initialize and update visit counter
+        function updateVisitCount() {
+            // Get current visit count from localStorage
+            let visitCount = localStorage.getItem('visitCount');
+            
+            // If no count exists, start at 1, otherwise increment
+            if (visitCount === null) {
+                visitCount = 1;
+            } else {
+                visitCount = parseInt(visitCount) + 1;
+            }
+            
+            // Save updated count
+            localStorage.setItem('visitCount', visitCount);
+            
+            // Display the count
+            document.getElementById('visit-count').textContent = visitCount;
+        }
+        
+        // Run on page load
+        window.addEventListener('load', updateVisitCount);
+    </script>
 </body>
 </html>
