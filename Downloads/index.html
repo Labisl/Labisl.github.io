@@ -12,8 +12,8 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
             min-height: 100vh;
             padding: 40px 20px;
         }
@@ -21,10 +21,9 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ddd;
         }
         
         header {
@@ -32,8 +31,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
-            border-bottom: 2px solid #667eea;
             padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -45,16 +44,15 @@
         
         .back-btn {
             padding: 10px 20px;
-            background: #667eea;
+            background: #333;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: background 0.3s;
+            border: none;
+            font-size: 1em;
         }
         
         .back-btn:hover {
-            background: #764ba2;
+            background: #555;
         }
         
         .tracks-list {
@@ -63,21 +61,14 @@
         }
         
         .track {
-            background: #f8f9ff;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .track:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
         
         .track-name {
             color: #333;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 1.1em;
             margin-bottom: 10px;
         }
@@ -104,9 +95,9 @@
         
         .speed-slider {
             width: 120px;
-            height: 6px;
-            border-radius: 3px;
-            background: linear-gradient(to right, #667eea, #764ba2);
+            height: 5px;
+            border-radius: 0;
+            background: #ccc;
             outline: none;
             -webkit-appearance: none;
             appearance: none;
@@ -116,60 +107,55 @@
         .speed-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #667eea;
+            width: 14px;
+            height: 14px;
+            border-radius: 0;
+            background: #333;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.4);
-            transition: background 0.2s;
+            box-shadow: none;
         }
         
         .speed-slider::-webkit-slider-thumb:hover {
-            background: #764ba2;
+            background: #555;
         }
         
         .speed-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #667eea;
+            width: 14px;
+            height: 14px;
+            border-radius: 0;
+            background: #333;
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.4);
-            transition: background 0.2s;
+            box-shadow: none;
         }
         
         .speed-slider::-moz-range-thumb:hover {
-            background: #764ba2;
+            background: #555;
         }
         
         .speed-display {
-            font-size: 0.95em;
-            font-weight: 700;
-            color: #667eea;
-            min-width: 50px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #333;
+            min-width: 40px;
             text-align: center;
-            background: rgba(102, 126, 234, 0.1);
-            padding: 6px 10px;
-            border-radius: 4px;
         }
         
         .download-btn {
             padding: 8px 16px;
-            background: #667eea;
+            background: #333;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border: none;
             font-size: 0.9em;
-            font-weight: 600;
-            transition: background 0.3s;
+            font-weight: bold;
+            cursor: pointer;
             display: inline-block;
             white-space: nowrap;
         }
         
         .download-btn:hover {
-            background: #764ba2;
+            background: #555;
         }
         
         .copyright-note {
@@ -182,12 +168,12 @@
         }
         
         .copyright-note a {
-            color: #667eea;
-            text-decoration: none;
+            color: #333;
+            text-decoration: underline;
         }
         
         .copyright-note a:hover {
-            text-decoration: underline;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -207,8 +193,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="aspire-ambient.mp3" download class="download-btn">Download</a>
                 </div>
@@ -222,8 +208,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="NowWeAreinSpace.mp3" download class="download-btn">Download</a>
                 </div>
@@ -237,8 +223,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="IntroTheme(aspire).wav" download class="download-btn">Download</a>
                 </div>
@@ -252,8 +238,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="TerribleandBass.mp3" download class="download-btn">Download</a>
                 </div>
@@ -267,8 +253,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="Aspire-Reversode.mp3" download class="download-btn">Download</a>
                 </div>
@@ -282,8 +268,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
-                        <span class="speed-display">1.00x</span>
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
                     </div>
                     <a href="/Downloads/ClassicJezz.wav" download class="download-btn">Download</a>
                 </div>
@@ -296,15 +282,22 @@
     </div>
 
     <script>
+        // Speed values: 0.05x to 8x in 0.25x intervals
+        const speeds = [
+            0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
+            3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
+        ];
+
         document.querySelectorAll('.track').forEach(track => {
             const audio = track.querySelector('audio');
             const slider = track.querySelector('.speed-slider');
             const display = track.querySelector('.speed-display');
             
             slider.addEventListener('input', function() {
-                const speed = parseFloat(this.value);
+                const index = parseInt(this.value);
+                const speed = speeds[index];
                 audio.playbackRate = speed;
-                display.textContent = speed.toFixed(2) + 'x';
+                display.textContent = speed + 'x';
             });
         });
     </script>
