@@ -95,6 +95,42 @@
             height: 30px;
         }
         
+        .speed-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .speed-btn {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        
+        .speed-btn:hover {
+            background: #764ba2;
+        }
+        
+        .speed-btn.active {
+            background: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
+        }
+        
+        .speed-display {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 45px;
+            text-align: center;
+        }
+        
         .download-btn {
             padding: 8px 16px;
             background: #667eea;
@@ -146,6 +182,13 @@
                         <source src="aspire-ambient.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="aspire-ambient.mp3" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -157,6 +200,13 @@
                         <source src="NowWeAreinSpace.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="NowWeAreinSpace.mp3" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -168,6 +218,13 @@
                         <source src="IntroTheme(aspire).wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="IntroTheme(aspire).wav" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -179,6 +236,13 @@
                         <source src="TerribleandBass.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="TerribleandBass.mp3" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -190,6 +254,13 @@
                         <source src="Aspire-Reversode.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="Aspire-Reversode.mp3" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -201,6 +272,13 @@
                         <source src="ClassicJezz.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
+                    <div class="speed-controls">
+                        <button class="speed-btn" data-speed="0.1">0.1x</button>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn" data-speed="1" class="active">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                        <button class="speed-btn" data-speed="4">4x</button>
+                    </div>
                     <a href="/Downloads/ClassicJezz.wav" download class="download-btn">Download</a>
                 </div>
             </div>
@@ -210,5 +288,23 @@
             <p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.track').forEach(track => {
+            const audio = track.querySelector('audio');
+            const speedButtons = track.querySelectorAll('.speed-btn');
+            
+            speedButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const speed = parseFloat(this.getAttribute('data-speed'));
+                    audio.playbackRate = speed;
+                    
+                    // Update active button styling
+                    speedButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
