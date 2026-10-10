@@ -97,38 +97,62 @@
         
         .speed-controls {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
+            flex-wrap: wrap;
         }
         
-        .speed-btn {
-            padding: 6px 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.85em;
-            font-weight: 600;
+        .speed-slider {
+            width: 120px;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
             cursor: pointer;
-            transition: background 0.3s;
-            white-space: nowrap;
         }
         
-        .speed-btn:hover {
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.4);
+            transition: background 0.2s;
+        }
+        
+        .speed-slider::-webkit-slider-thumb:hover {
             background: #764ba2;
         }
         
-        .speed-btn.active {
+        .speed-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.4);
+            transition: background 0.2s;
+        }
+        
+        .speed-slider::-moz-range-thumb:hover {
             background: #764ba2;
-            box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
         }
         
         .speed-display {
-            font-size: 0.85em;
-            font-weight: 600;
+            font-size: 0.95em;
+            font-weight: 700;
             color: #667eea;
-            min-width: 45px;
+            min-width: 50px;
             text-align: center;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 6px 10px;
+            border-radius: 4px;
         }
         
         .download-btn {
@@ -183,11 +207,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="aspire-ambient.mp3" download class="download-btn">Download</a>
                 </div>
@@ -201,11 +222,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="NowWeAreinSpace.mp3" download class="download-btn">Download</a>
                 </div>
@@ -219,11 +237,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="IntroTheme(aspire).wav" download class="download-btn">Download</a>
                 </div>
@@ -237,11 +252,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="TerribleandBass.mp3" download class="download-btn">Download</a>
                 </div>
@@ -255,11 +267,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="Aspire-Reversode.mp3" download class="download-btn">Download</a>
                 </div>
@@ -273,11 +282,8 @@
                         Your browser does not support the audio element.
                     </audio>
                     <div class="speed-controls">
-                        <button class="speed-btn" data-speed="0.1">0.1x</button>
-                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                        <button class="speed-btn" data-speed="1" class="active">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
+                        <input type="range" class="speed-slider" min="0.05" max="8" step="0.05" value="1">
+                        <span class="speed-display">1.00x</span>
                     </div>
                     <a href="/Downloads/ClassicJezz.wav" download class="download-btn">Download</a>
                 </div>
@@ -292,17 +298,13 @@
     <script>
         document.querySelectorAll('.track').forEach(track => {
             const audio = track.querySelector('audio');
-            const speedButtons = track.querySelectorAll('.speed-btn');
+            const slider = track.querySelector('.speed-slider');
+            const display = track.querySelector('.speed-display');
             
-            speedButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const speed = parseFloat(this.getAttribute('data-speed'));
-                    audio.playbackRate = speed;
-                    
-                    // Update active button styling
-                    speedButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                });
+            slider.addEventListener('input', function() {
+                const speed = parseFloat(this.value);
+                audio.playbackRate = speed;
+                display.textContent = speed.toFixed(2) + 'x';
             });
         });
     </script>
