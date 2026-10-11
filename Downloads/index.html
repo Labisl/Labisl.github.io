@@ -257,6 +257,22 @@
             </div>
 
             <div class="track">
+                <div class="track-name">Into the Fallen Forest</div>
+                <div class="track-release-date">10 October 2026</div>
+                <div class="track-controls">
+                    <audio controls>
+                        <source src="IntoTheFallenForest.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="speed-controls">
+                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+                        <span class="speed-display">1x</span>
+                    </div>
+                    <a href="IntoTheFallenForest.wav" download class="download-btn">Download</a>
+                </div>
+            </div>
+            
+            <div class="track">
                 <div class="track-name">Aspire Reversode</div>
                 <div class="track-release-date">1 October 2026</div>
                 <div class="track-controls">
@@ -284,7 +300,7 @@
                         <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
                         <span class="speed-display">1x</span>
                     </div>
-                    <a href="/Downloads/ClassicJezz.wav" download class="download-btn">Download</a>
+                    <a href="ClassicJezz.wav" download class="download-btn">Download</a>
                 </div>
             </div>
         </div>
@@ -305,10 +321,15 @@
             const audio = track.querySelector('audio');
             const slider = track.querySelector('.speed-slider');
             const display = track.querySelector('.speed-display');
-            
+            const initialIndex = parseInt(slider.value, 10);
+            const initialSpeed = speeds[initialIndex] || speeds[4];
+
+            audio.playbackRate = initialSpeed;
+            display.textContent = initialSpeed + 'x';
+
             slider.addEventListener('input', function() {
-                const index = parseInt(this.value);
-                const speed = speeds[index];
+                const index = parseInt(this.value, 10);
+                const speed = speeds[index] || speeds[4];
                 audio.playbackRate = speed;
                 display.textContent = speed + 'x';
             });
