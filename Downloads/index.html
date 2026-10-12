@@ -1,402 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My projects you can Download</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My projects you can Download</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+body {
+font-family: Arial, sans-serif;
+background: #f5f5f5;
+min-height: 100vh;
+padding: 40px 20px;
+}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border: 1px solid #ddd;
-        }
+.container {
+max-width: 800px;
+margin: 0 auto;
+background: white;
+padding: 40px;
+border: 1px solid #ddd;
+}
 
-        .copyright-label {
-            font-weight: 700;
-            color: #333;
-            font-size: 0.95em;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 18px;
-        }
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 40px;
+padding-bottom: 20px;
+border-bottom: 1px solid #ddd;
+flex-wrap: wrap;
+gap: 20px;
+}
 
-        .license-box {
-            background: #fafafa;
-            border: 1px solid #e2e2e2;
-            padding: 18px 20px;
-            margin-bottom: 24px;
-            line-height: 1.7;
-        }
+h1 {
+color: #333;
+font-size: 2em;
+}
 
-        .license-box h2 {
-            margin: 0 0 10px;
-            font-size: 1.05em;
-            color: #1d1d1d;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
+.back-btn {
+padding: 10px 20px;
+background: #333;
+color: white;
+text-decoration: none;
+border: none;
+font-size: 1em;
+}
 
-        .license-box p {
-            margin: 0 0 8px;
-            color: #2f2f2f;
-            font-size: 0.96em;
-        }
+.back-btn:hover {
+background: #555;
+}
 
-        .license-box p:last-child {
-            margin-bottom: 0;
-        }
+.tracks-list {
+display: grid;
+gap: 20px;
+}
 
-        .license-box a {
-            color: #111;
-            text-decoration: underline;
-            word-break: break-word;
-        }
+.track {
+background: white;
+padding: 20px;
+border: 1px solid #ddd;
+}
 
-        .license-box a:hover {
-            text-decoration: none;
-        }
+.track-name {
+color: #333;
+font-weight: bold;
+font-size: 1.1em;
+margin-bottom: 5px;
+}
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-            padding-bottom: 18px;
-            border-bottom: 1px solid #ddd;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+.track-release-date {
+color: #999;
+font-size: 0.9em;
+margin-bottom: 15px;
+font-style: italic;
+}
 
-        h1 {
-            color: #333;
-            font-size: 2em;
-        }
+.track-controls {
+display: flex;
+gap: 15px;
+align-items: center;
+flex-wrap: wrap;
+}
 
-        .back-btn {
-            padding: 10px 20px;
-            background: #333;
-            color: white;
-            text-decoration: none;
-            border: none;
-            font-size: 1em;
-        }
+audio {
+flex: 1;
+min-width: 200px;
+height: 30px;
+}
 
-        .back-btn:hover {
-            background: #555;
-        }
+.speed-controls {
+display: flex;
+gap: 12px;
+align-items: center;
+flex-wrap: wrap;
+}
 
-        .tracks-list {
-            display: grid;
-            gap: 18px;
-        }
+.speed-slider {
+width: 120px;
+height: 5px;
+border-radius: 0;
+background: #ccc;
+outline: none;
+-webkit-appearance: none;
+appearance: none;
+cursor: pointer;
+}
 
-        .track {
-            background: white;
-            padding: 18px 20px;
-            border: 1px solid #ddd;
-        }
+.speed-slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 14px;
+height: 14px;
+border-radius: 0;
+background: #333;
+cursor: pointer;
+box-shadow: none;
+}
 
-        .track-name {
-            color: #333;
-            font-weight: bold;
-            font-size: 1.08em;
-            margin-bottom: 4px;
-        }
+.speed-slider::-webkit-slider-thumb:hover {
+background: #555;
+}
 
-        .track-release-date {
-            color: #999;
-            font-size: 0.9em;
-            margin-bottom: 12px;
-            font-style: italic;
-        }
+.speed-slider::-moz-range-thumb {
+width: 14px;
+height: 14px;
+border-radius: 0;
+background: #333;
+cursor: pointer;
+border: none;
+box-shadow: none;
+}
 
-        .track-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+.speed-slider::-moz-range-thumb:hover {
+background: #555;
+}
 
-        audio {
-            flex: 1;
-            min-width: 200px;
-            height: 30px;
-        }
+.speed-display {
+font-size: 0.9em;
+font-weight: bold;
+color: #333;
+min-width: 40px;
+text-align: center;
+}
 
-        .speed-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+.download-btn {
+padding: 8px 16px;
+background: #333;
+color: white;
+text-decoration: none;
+border: none;
+font-size: 0.9em;
+font-weight: bold;
+cursor: pointer;
+display: inline-block;
+white-space: nowrap;
+}
 
-        .speed-slider {
-            width: 120px;
-            height: 5px;
-            border-radius: 0;
-            background: #ccc;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-            cursor: pointer;
-        }
+.download-btn:hover {
+background: #555;
+}
 
-        .speed-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 0;
-            background: #333;
-            cursor: pointer;
-            box-shadow: none;
-        }
+.copyright-note {
+margin-top: 40px;
+padding-top: 20px;
+border-top: 1px solid #ddd;
+color: #666;
+font-size: 0.9em;
+text-align: center;
+}
 
-        .speed-slider::-webkit-slider-thumb:hover {
-            background: #555;
-        }
+.copyright-note a {
+color: #333;
+text-decoration: underline;
+}
 
-        .speed-slider::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 0;
-            background: #333;
-            cursor: pointer;
-            border: none;
-            box-shadow: none;
-        }
-
-        .speed-slider::-moz-range-thumb:hover {
-            background: #555;
-        }
-
-        .speed-display {
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #333;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .download-btn {
-            padding: 8px 16px;
-            background: #333;
-            color: white;
-            text-decoration: none;
-            border: none;
-            font-size: 0.9em;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        .download-btn:hover {
-            background: #555;
-        }
-
-        .footer-note {
-            margin-top: 28px;
-            padding-top: 18px;
-            border-top: 1px solid #ddd;
-            color: #666;
-            font-size: 0.9em;
-            text-align: center;
-        }
-
-        .footer-note a {
-            color: #333;
-            text-decoration: underline;
-        }
-
-        .footer-note a:hover {
-            text-decoration: none;
-        }
-    </style>
+.copyright-note a:hover {
+text-decoration: none;
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="copyright-label">© 2026 Labisl</div>
+<div class="container">
+<header>
+<h1>My Projects</h1>
+<a href="../index.html" class="back-btn">← Home</a>
+</header>
 
-        <div class="license-box">
-            <h2>Copyright &amp; Licensing</h2>
-            <p>All songs on this page are licensed under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC BY 4.0)</a> license.</p>
-            <p>To view a copy of this license, visit <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">https://creativecommons.org/licenses/by/4.0/</a></p>
-            <p>Attribute as: xjq (labisl.github.io/Downloads/SONG_URL)</p>
-        </div>
-
-        <header>
-            <h1>My Projects</h1>
-            <a href="../index.html" class="back-btn">← Home</a>
-        </header>
-
-        <div class="tracks-list">
-            <div class="track">
-                <div class="track-name">Aspire Ambient</div>
+<div class="tracks-list">
+<div class="track">
+<div class="track-name">Aspire Ambient</div>
                 <div class="track-release-date">12 August 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="aspire-ambient.mp3" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="aspire-ambient.mp3" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-release-date">An ambient version of Aspire (12 August 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="aspire-ambient.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="aspire-ambient.mp3" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
+<div class="track">
                 <div class="track-name">End Of Space</div>
                 <div class="track-release-date">13 August 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="NowWeAreinSpace.mp3" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="NowWeAreinSpace.mp3" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-name">First to touch the Moon</div>
+                <div class="track-release-date">It's actually a remix of a space-themed game I played once... (13 August 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="NowWeAreinSpace.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="NowWeAreinSpace.mp3" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
-                <div class="track-name">Aspire</div>
+<div class="track">
+<div class="track-name">Aspire</div>
                 <div class="track-release-date">5 July 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="IntroTheme(aspire).wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="IntroTheme(aspire).wav" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-release-date">This was the first track on this site! (5 July 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="IntroTheme(aspire).wav" type="audio/wav">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="IntroTheme(aspire).wav" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
-                <div class="track-name">Terrible and Bass</div>
+<div class="track">
+<div class="track-name">Terrible and Bass</div>
                 <div class="track-release-date">9 October 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="TerribleandBass.mp3" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="TerribleandBass.mp3" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-release-date">A Canon in D- remake with guitar (9 October 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="TerribleandBass.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="TerribleandBass.mp3" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
-                <div class="track-name">Into the Fallen Forest</div>
+<div class="track">
+<div class="track-name">Into the Fallen Forest</div>
                 <div class="track-release-date">10 October 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="IntoTheFallenForest.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="IntoTheFallenForest.wav" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-release-date">I hope you're hungry for an adventure in the Twisted, Fallen Forest (10 October 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="IntoTheFallenForest.wav" type="audio/wav">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="IntoTheFallenForest.wav" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
-                <div class="track-name">Aspire Reversode</div>
+<div class="track">
+<div class="track-name">Aspire Reversode</div>
                 <div class="track-release-date">1 October 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="Aspire-Reversode.mp3" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="Aspire-Reversode.mp3" download class="download-btn">Download</a>
-                </div>
-            </div>
+                <div class="track-release-date">Reversed, and paulstretched an tiny bit for that flashbacking feel (1 October 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="Aspire-Reversode.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="Aspire-Reversode.mp3" download class="download-btn">Download</a>
+</div>
+</div>
 
-            <div class="track">
-                <div class="track-name">Paper on Silent Film</div>
+<div class="track">
+<div class="track-name">Paper on Silent Film</div>
                 <div class="track-release-date">30 Sep 2026</div>
-                <div class="track-controls">
-                    <audio controls preload="metadata">
-                        <source src="ClassicJezz.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="speed-controls">
-                        <input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
-                        <span class="speed-display">1x</span>
-                    </div>
-                    <a href="ClassicJezz.wav" download class="download-btn">Download</a>
-                </div>
-            </div>
-        </div>
+                <div class="track-release-date">A silent film piece, maybe a montage, even! (30 Sep 2026)</div>
+<div class="track-controls">
+<audio controls>
+<source src="ClassicJezz.wav" type="audio/wav">
+Your browser does not support the audio element.
+</audio>
+<div class="speed-controls">
+<input type="range" class="speed-slider" min="0" max="31" step="1" value="4">
+<span class="speed-display">1x</span>
+</div>
+<a href="ClassicJezz.wav" download class="download-btn">Download</a>
+</div>
+</div>
+</div>
 
-        <div class="footer-note">
-            <p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
-        </div>
-    </div>
+<div class="copyright-note">
+<p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
+</div>
+</div>
 
-    <script>
-        const speeds = [
-            0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
-            3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
-        ];
+<script>
+// Speed values: 0.05x to 8x in 0.25x intervals
+const speeds = [
+0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
+3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
+];
 
-        const getSafeSpeedIndex = (value) => {
-            const index = Number.parseInt(value, 10);
-            if (!Number.isFinite(index)) return 4;
-            return Math.min(Math.max(index, 0), speeds.length - 1);
-        };
+document.querySelectorAll('.track').forEach(track => {
+const audio = track.querySelector('audio');
+const slider = track.querySelector('.speed-slider');
+const display = track.querySelector('.speed-display');
+const initialIndex = parseInt(slider.value, 10);
+const initialSpeed = speeds[initialIndex] || speeds[4];
 
-        document.querySelectorAll('.track').forEach((track) => {
-            const audio = track.querySelector('audio');
-            const slider = track.querySelector('.speed-slider');
-            const display = track.querySelector('.speed-display');
+audio.playbackRate = initialSpeed;
+display.textContent = initialSpeed + 'x';
 
-            if (!audio || !slider || !display) {
-                return;
-            }
-
-            const updateSpeed = () => {
-                const index = getSafeSpeedIndex(slider.value);
-                const speed = speeds[index] ?? speeds[4];
-                audio.defaultPlaybackRate = speed;
-                audio.playbackRate = speed;
-                display.textContent = `${Number(speed).toFixed(speed % 1 === 0 ? 0 : 2)}x`;
-            };
-
-            updateSpeed();
-            slider.addEventListener('input', updateSpeed);
-            audio.addEventListener('loadedmetadata', updateSpeed);
-        });
-    </script>
+slider.addEventListener('input', function() {
+const index = parseInt(this.value, 10);
+const speed = speeds[index] || speeds[4];
+audio.playbackRate = speed;
+display.textContent = speed + 'x';
+});
+});
+</script>
 </body>
 </html>
