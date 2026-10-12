@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Labisl</title>
+    <title>labisl A secret website</title>
     <style>
         * {
             margin: 0;
@@ -13,66 +13,77 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #FFD700 0%, #9ACD32 100%);
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            color: #1f2937;
         }
         
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.8);
             padding: 60px 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            max-width: 520px;
+            border: 1px solid rgba(107, 114, 128, 0.2);
         }
         
         .visit-counter {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255, 215, 0, 0.8);
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1em;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.9em;
             font-weight: 600;
-            color: #333;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(107, 114, 128, 0.2);
         }
         
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+            color: #111827;
+            margin-bottom: 12px;
+            font-size: 2.7em;
+            letter-spacing: 0.04em;
+        }
+        
+        h2 {
+            color: #374151;
+            margin-bottom: 18px;
+            font-size: 1.4em;
+            font-weight: 500;
         }
         
         p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            color: #4b5563;
+            margin-bottom: 28px;
+            font-size: 1.05em;
             line-height: 1.6;
         }
         
         .btn {
             display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #FFD700 0%, #9ACD32 100%);
-            color: white;
+            padding: 14px 30px;
+            background: #374151;
+            color: #ffffff;
             text-decoration: none;
-            border-radius: 50px;
-            font-size: 1.1em;
+            border-radius: 999px;
+            font-size: 1em;
             font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.2s ease, opacity 0.2s ease;
             border: none;
             cursor: pointer;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            transform: translateY(-1px);
+            opacity: 0.92;
         }
     </style>
 </head>
@@ -80,8 +91,8 @@
     <div class="visit-counter">Website visits: <span id="visit-count">0</span></div>
     <div class="container">
         <h1>labisl</h1>
-        <h2>A cool website of.. ..stuff</h2>
-        <p>This website is currently under construction, but you can view my projects!</p>
+        <h2>A secret website</h2>
+        <p>This website is currently under construction, but you can view my projects.</p>
         <a href="Downloads/" class="btn">Browse projects</a>
     </div>
 
