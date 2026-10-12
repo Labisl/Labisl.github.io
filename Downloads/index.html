@@ -370,11 +370,10 @@
             3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
         ];
 
-        const getSpeedForValue = (value) => {
+        const getSafeSpeedIndex = (value) => {
             const index = Number.parseInt(value, 10);
-            const safeIndex = Number.isFinite(index) ? index : 4;
-            const clampedIndex = Math.min(Math.max(safeIndex, 0), speeds.length - 1);
-            return speeds[clampedIndex] ?? speeds[4];
+            if (!Number.isFinite(index)) return 4;
+            return Math.min(Math.max(index, 0), speeds.length - 1);
         };
 
         document.querySelectorAll('.track').forEach((track) => {
@@ -387,14 +386,16 @@
             }
 
             const updateSpeed = () => {
-                const speed = getSpeedForValue(slider.value);
+                const index = getSafeSpeedIndex(slider.value);
+                const speed = speeds[index] ?? speeds[4];
                 audio.defaultPlaybackRate = speed;
                 audio.playbackRate = speed;
-                display.textContent = `${speed}x`;
+                display.textContent = `${Number(speed).toFixed(speed % 1 === 0 ? 0 : 2)}x`;
             };
 
             updateSpeed();
             slider.addEventListener('input', updateSpeed);
+            audio.addEventListener('loadedmetadata', updateSpeed);
         });
     </script>
 </body>
