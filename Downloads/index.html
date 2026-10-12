@@ -195,8 +195,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="Copyright">
-        <p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
+        <div class="copyright-label">© 2026 Labisl</div>
         <header>
             <h1>My Projects</h1>
             <a href="../index.html" class="back-btn">← Home</a>
@@ -207,7 +206,7 @@
                 <div class="track-name">Aspire Ambient</div>
                 <div class="track-release-date">12 August 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="aspire-ambient.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
@@ -223,7 +222,7 @@
                 <div class="track-name">End Of Space</div>
                 <div class="track-release-date">13 August 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="NowWeAreinSpace.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
@@ -239,7 +238,7 @@
                 <div class="track-name">Aspire</div>
                 <div class="track-release-date">5 July 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="IntroTheme(aspire).wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
@@ -255,7 +254,7 @@
                 <div class="track-name">Terrible and Bass</div>
                 <div class="track-release-date">9 October 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="TerribleandBass.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
@@ -271,7 +270,7 @@
                 <div class="track-name">Into the Fallen Forest</div>
                 <div class="track-release-date">10 October 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="IntoTheFallenForest.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
@@ -287,7 +286,7 @@
                 <div class="track-name">Aspire Reversode</div>
                 <div class="track-release-date">1 October 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="Aspire-Reversode.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
@@ -303,7 +302,7 @@
                 <div class="track-name">Paper on Silent Film</div>
                 <div class="track-release-date">30 Sep 2026</div>
                 <div class="track-controls">
-                    <audio controls>
+                    <audio controls preload="metadata">
                         <source src="ClassicJezz.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
@@ -315,31 +314,43 @@
                 </div>
             </div>
         </div>
+        
+        <div class="copyright-note">
+            <p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
+        </div>
     </div>
 
     <script>
-        // Speed values: 0.05x to 8x in 0.25x intervals
         const speeds = [
             0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
             3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
         ];
 
+        const getSpeedForValue = (value) => {
+            const index = Number.parseInt(value, 10);
+            const safeIndex = Number.isFinite(index) ? index : 4;
+            const clampedIndex = Math.min(Math.max(safeIndex, 0), speeds.length - 1);
+            return speeds[clampedIndex] ?? speeds[4];
+        };
+
         document.querySelectorAll('.track').forEach(track => {
             const audio = track.querySelector('audio');
             const slider = track.querySelector('.speed-slider');
             const display = track.querySelector('.speed-display');
-            const initialIndex = parseInt(slider.value, 10);
-            const initialSpeed = speeds[initialIndex] || speeds[4];
 
-            audio.playbackRate = initialSpeed;
-            display.textContent = initialSpeed + 'x';
+            if (!audio || !slider || !display) {
+                return;
+            }
 
-            slider.addEventListener('input', function() {
-                const index = parseInt(this.value, 10);
-                const speed = speeds[index] || speeds[4];
+            const updateSpeed = () => {
+                const speed = getSpeedForValue(slider.value);
+                audio.defaultPlaybackRate = speed;
                 audio.playbackRate = speed;
-                display.textContent = speed + 'x';
-            });
+                display.textContent = `${speed}x`;
+            };
+
+            updateSpeed();
+            slider.addEventListener('input', updateSpeed);
         });
     </script>
 </body>
