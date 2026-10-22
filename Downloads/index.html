@@ -19,7 +19,7 @@ padding: 40px 20px;
 }
 
 .container {
-max-width: 800px;
+max-width: 960px;
 margin: 0 auto;
 background: white;
 padding: 40px;
@@ -163,6 +163,184 @@ white-space: nowrap;
 
 .download-btn:hover {
 background: #555;
+}
+
+.games-section {
+margin-top: 40px;
+padding-top: 30px;
+border-top: 1px solid #ddd;
+}
+
+.games-section h2 {
+color: #333;
+font-size: 1.7em;
+margin-bottom: 20px;
+}
+
+.games-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 20px;
+}
+
+.game-card {
+background: #fafafa;
+border: 1px solid #ddd;
+border-radius: 12px;
+padding: 20px;
+text-align: center;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.game-card h3 {
+font-size: 1.2em;
+color: #333;
+margin-bottom: 12px;
+}
+
+.game-card p {
+color: #666;
+font-size: 0.9em;
+margin-bottom: 12px;
+line-height: 1.5;
+}
+
+.game-card canvas {
+background: #111827;
+border: 2px solid #333;
+border-radius: 8px;
+margin-bottom: 12px;
+max-width: 100%;
+}
+
+.game-card button {
+padding: 10px 14px;
+background: #333;
+color: white;
+border: none;
+font-size: 0.9em;
+font-weight: bold;
+cursor: pointer;
+}
+
+.game-card button:hover {
+background: #555;
+}
+
+.sudoku-board {
+display: grid;
+grid-template-columns: repeat(9, minmax(0, 1fr));
+width: min(100%, 220px);
+margin: 0 auto 12px;
+border: 2px solid #333;
+background: #fff;
+}
+
+.sudoku-cell {
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 22px;
+border: 1px solid #ccc;
+background: #fff;
+}
+
+.sudoku-cell.fixed {
+background: #f0f0f0;
+font-weight: bold;
+}
+
+.sudoku-cell input {
+width: 100%;
+height: 100%;
+min-height: 22px;
+text-align: center;
+border: none;
+background: transparent;
+font-size: 0.9em;
+color: #333;
+}
+
+.sudoku-cell input:focus {
+outline: 1px solid #666;
+}
+
+.wordle-board {
+display: grid;
+gap: 6px;
+justify-content: center;
+margin-bottom: 12px;
+}
+
+.wordle-row {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 4px;
+}
+
+.wordle-tile {
+width: 30px;
+height: 30px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 0.9em;
+border: 1px solid #bbb;
+background: white;
+color: #333;
+text-transform: uppercase;
+}
+
+.wordle-tile.correct {
+background: #4caf50;
+color: white;
+border-color: #4caf50;
+}
+
+.wordle-tile.present {
+background: #f0ad4e;
+color: white;
+border-color: #f0ad4e;
+}
+
+.wordle-tile.absent {
+background: #6b7280;
+color: white;
+border-color: #6b7280;
+}
+
+.wordle-keyboard {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 4px;
+margin: 0 auto 12px;
+max-width: 220px;
+}
+
+.keyboard-key {
+padding: 6px 8px;
+background: #e5e7eb;
+border: 1px solid #d1d5db;
+border-radius: 4px;
+font-size: 0.75em;
+font-weight: bold;
+cursor: pointer;
+color: #1f2937;
+min-width: 20px;
+text-transform: uppercase;
+}
+
+.keyboard-key.wide {
+min-width: 42px;
+}
+
+.wordle-status {
+font-size: 0.8em;
+color: #333;
+min-height: 18px;
+margin-bottom: 8px;
 }
 
 .copyright-note {
@@ -329,13 +507,40 @@ Your browser does not support the audio element.
 </div>
 </div>
 
+<section class="games-section">
+  <h2>Games</h2>
+  <div class="games-grid">
+    <div class="game-card">
+      <h3>Tetris</h3>
+      <p>No music, just blocks.</p>
+      <canvas id="tetris-canvas" width="200" height="400"></canvas>
+      <button id="start-tetris">Start / Restart</button>
+    </div>
+
+    <div class="game-card">
+      <h3>Sudoku</h3>
+      <p>Fill the missing numbers.</p>
+      <div id="sudoku-board" class="sudoku-board"></div>
+      <button id="reset-sudoku">Reset</button>
+    </div>
+
+    <div class="game-card">
+      <h3>Wordle</h3>
+      <p>Guess the hidden five-letter word.</p>
+      <div id="wordle-board" class="wordle-board"></div>
+      <div id="wordle-status" class="wordle-status"></div>
+      <div id="wordle-keyboard" class="wordle-keyboard"></div>
+      <button id="new-wordle">New Game</button>
+    </div>
+  </div>
+</section>
+
 <div class="copyright-note">
 <p>For copyright information and licensing, see the <a href="COPYRIGHTINFO.txt">copyright licence</a></p>
 </div>
 </div>
 
 <script>
-// Speed values: 0.05x to 8x in 0.25x intervals
 const speeds = [
 0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 8
@@ -358,6 +563,371 @@ audio.playbackRate = speed;
 display.textContent = speed + 'x';
 });
 });
+
+const canvas = document.getElementById('tetris-canvas');
+const ctx = canvas.getContext('2d');
+const boardWidth = 10;
+const boardHeight = 20;
+const cellSize = 20;
+const pieces = {
+  I: [[1, 1, 1, 1]],
+  O: [[1, 1], [1, 1]],
+  T: [[0, 1, 0], [1, 1, 1]],
+  S: [[0, 1, 1], [1, 1, 0]],
+  Z: [[1, 1, 0], [0, 1, 1]],
+  J: [[1, 0, 0], [1, 1, 1]],
+  L: [[0, 0, 1], [1, 1, 1]]
+};
+
+let board = [];
+let currentPiece = null;
+let dropInterval = 500;
+let lastTime = 0;
+let running = false;
+let animationId = null;
+
+function createBoard() {
+  return Array.from({ length: boardHeight }, () => Array(boardWidth).fill(0));
+}
+
+function rotateMatrix(matrix) {
+  return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]).reverse());
+}
+
+function randomPiece() {
+  const keys = Object.keys(pieces);
+  const type = keys[Math.floor(Math.random() * keys.length)];
+  const shape = pieces[type].map(row => [...row]);
+  return {
+    type,
+    matrix: shape,
+    x: Math.floor((boardWidth - shape[0].length) / 2),
+    y: -1
+  };
+}
+
+function collides(piece, offsetX = 0, offsetY = 0, matrix = piece.matrix) {
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      if (!matrix[y][x]) continue;
+      const nextX = piece.x + x + offsetX;
+      const nextY = piece.y + y + offsetY;
+      if (nextX < 0 || nextX >= boardWidth || nextY >= boardHeight) return true;
+      if (nextY >= 0 && board[nextY][nextX]) return true;
+    }
+  }
+  return false;
+}
+
+function mergePiece() {
+  currentPiece.matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (!value) return;
+      const boardY = currentPiece.y + y;
+      const boardX = currentPiece.x + x;
+      if (boardY >= 0) board[boardY][boardX] = 1;
+    });
+  });
+  clearLines();
+  currentPiece = randomPiece();
+  if (collides(currentPiece)) {
+    running = false;
+    board = createBoard();
+  }
+}
+
+function clearLines() {
+  let rowsCleared = 0;
+  for (let y = boardHeight - 1; y >= 0; y--) {
+    if (board[y].every(Boolean)) {
+      board.splice(y, 1);
+      board.unshift(Array(boardWidth).fill(0));
+      rowsCleared += 1;
+      y += 1;
+    }
+  }
+  if (rowsCleared) {
+    dropInterval = Math.max(150, dropInterval - rowsCleared * 15);
+  }
+}
+
+function drawCell(x, y, value, color = '#60a5fa') {
+  ctx.fillStyle = value ? color : '#0f172a';
+  ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  ctx.strokeStyle = '#1f2937';
+  ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+}
+
+function drawBoard() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let y = 0; y < boardHeight; y++) {
+    for (let x = 0; x < boardWidth; x++) {
+      drawCell(x, y, board[y][x], '#1d4ed8');
+    }
+  }
+
+  if (currentPiece) {
+    currentPiece.matrix.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (!value) return;
+        const drawX = currentPiece.x + x;
+        const drawY = currentPiece.y + y;
+        if (drawY >= 0) drawCell(drawX, drawY, 1, '#f59e0b');
+      });
+    });
+  }
+}
+
+function movePiece(dx, dy) {
+  if (!currentPiece || !running) return;
+  if (!collides(currentPiece, dx, dy)) {
+    currentPiece.x += dx;
+    currentPiece.y += dy;
+    drawBoard();
+    return true;
+  }
+  if (dy > 0) {
+    mergePiece();
+    drawBoard();
+  }
+  return false;
+}
+
+function startTetris() {
+  board = createBoard();
+  currentPiece = randomPiece();
+  dropInterval = 500;
+  lastTime = 0;
+  running = true;
+  if (animationId) cancelAnimationFrame(animationId);
+  function gameLoop(time) {
+    const delta = time - lastTime;
+    if (running) {
+      if (delta > dropInterval) {
+        movePiece(0, 1);
+        lastTime = time;
+      }
+      drawBoard();
+      animationId = requestAnimationFrame(gameLoop);
+    }
+  }
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+document.getElementById('start-tetris').addEventListener('click', startTetris);
+
+document.addEventListener('keydown', event => {
+  if (!currentPiece || !running) return;
+  const key = event.key.toLowerCase();
+  if (key === 'arrowleft' || key === 'a') movePiece(-1, 0);
+  if (key === 'arrowright' || key === 'd') movePiece(1, 0);
+  if (key === 'arrowdown' || key === 's') movePiece(0, 1);
+  if (key === 'arrowup' || key === 'w') {
+    const rotated = rotateMatrix(currentPiece.matrix);
+    if (!collides(currentPiece, 0, 0, rotated)) {
+      currentPiece.matrix = rotated;
+      drawBoard();
+    }
+  }
+  if (key === ' ') {
+    while (!collides(currentPiece, 0, 1)) {
+      currentPiece.y += 1;
+    }
+    mergePiece();
+    drawBoard();
+  }
+});
+
+const sudokuPuzzle = [
+  [5, 3, 0, 0, 7, 0, 0, 0, 0],
+  [6, 0, 0, 1, 9, 5, 0, 0, 0],
+  [0, 9, 8, 0, 0, 0, 0, 6, 0],
+  [8, 0, 0, 0, 6, 0, 0, 0, 3],
+  [4, 0, 0, 8, 0, 3, 0, 0, 1],
+  [7, 0, 0, 0, 2, 0, 0, 0, 6],
+  [0, 6, 0, 0, 0, 0, 2, 8, 0],
+  [0, 0, 0, 4, 1, 9, 0, 0, 5],
+  [0, 0, 0, 0, 8, 0, 0, 7, 9]
+];
+
+const sudokuBoard = document.getElementById('sudoku-board');
+let sudokuGrid = sudokuPuzzle.map(row => row.slice());
+
+function renderSudoku() {
+  sudokuBoard.innerHTML = '';
+  sudokuGrid.forEach((row, rowIndex) => {
+    row.forEach((value, colIndex) => {
+      const cell = document.createElement('div');
+      const fixed = sudokuPuzzle[rowIndex][colIndex] !== 0;
+      cell.className = 'sudoku-cell' + (fixed ? ' fixed' : '');
+
+      if (fixed) {
+        cell.textContent = value;
+      } else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.maxLength = 1;
+        input.value = value === 0 ? '' : value;
+        input.addEventListener('input', () => {
+          const sanitized = input.value.replace(/[^1-9]/g, '').slice(0, 1);
+          input.value = sanitized;
+          sudokuGrid[rowIndex][colIndex] = sanitized ? Number(sanitized) : 0;
+        });
+        cell.appendChild(input);
+      }
+
+      sudokuBoard.appendChild(cell);
+    });
+  });
+}
+
+document.getElementById('reset-sudoku').addEventListener('click', () => {
+  sudokuGrid = sudokuPuzzle.map(row => row.slice());
+  renderSudoku();
+});
+
+renderSudoku();
+
+const wordBank = ['APPLE', 'BRAVE', 'CLOUD', 'CRANE', 'DREAM', 'EARTH', 'GHOST', 'GRAIN', 'LIGHT', 'MUSIC', 'OCEAN', 'PLAIN', 'RIVER', 'SMILE', 'STONE', 'TRAIL', 'WATER', 'WORLD'];
+const wordleBoardEl = document.getElementById('wordle-board');
+const wordleStatusEl = document.getElementById('wordle-status');
+const wordleKeyboardEl = document.getElementById('wordle-keyboard');
+let wordleWord = '';
+let wordleGuesses = [];
+let currentGuess = '';
+let wordleSolved = false;
+
+const keyboardLayout = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+
+function buildKeyboard() {
+  wordleKeyboardEl.innerHTML = '';
+  keyboardLayout.forEach((row, rowIndex) => {
+    const rowEl = document.createElement('div');
+    rowEl.style.display = 'flex';
+    rowEl.style.gap = '4px';
+    rowEl.style.justifyContent = 'center';
+    rowEl.style.marginBottom = rowIndex === keyboardLayout.length - 1 ? '0' : '4px';
+
+    row.split('').forEach(letter => {
+      const key = document.createElement('button');
+      key.type = 'button';
+      key.className = 'keyboard-key';
+      key.textContent = letter;
+      key.addEventListener('click', () => handleWordleInput(letter));
+      rowEl.appendChild(key);
+    });
+
+    if (rowIndex === keyboardLayout.length - 1) {
+      const enter = document.createElement('button');
+      enter.type = 'button';
+      enter.className = 'keyboard-key wide';
+      enter.textContent = 'Enter';
+      enter.addEventListener('click', submitWordleGuess);
+      rowEl.appendChild(enter);
+
+      const back = document.createElement('button');
+      back.type = 'button';
+      back.className = 'keyboard-key wide';
+      back.textContent = '⌫';
+      back.addEventListener('click', () => handleWordleInput('BACKSPACE'));
+      rowEl.appendChild(back);
+    }
+
+    wordleKeyboardEl.appendChild(rowEl);
+  });
+}
+
+function initWordle() {
+  wordleWord = wordBank[Math.floor(Math.random() * wordBank.length)];
+  wordleGuesses = [];
+  currentGuess = '';
+  wordleSolved = false;
+  wordleStatusEl.textContent = '';
+  renderWordleBoard();
+}
+
+function renderWordleBoard() {
+  wordleBoardEl.innerHTML = '';
+  for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
+    const row = document.createElement('div');
+    row.className = 'wordle-row';
+
+    for (let colIndex = 0; colIndex < 5; colIndex++) {
+      const tile = document.createElement('div');
+      tile.className = 'wordle-tile';
+      const guess = wordleGuesses[rowIndex] || '';
+      const letter = guess[colIndex] || '';
+      tile.textContent = letter;
+
+      if (guess && rowIndex < wordleGuesses.length) {
+        const guessLetter = guess[colIndex];
+        const targetLetter = wordleWord[colIndex];
+        if (guessLetter === targetLetter) {
+          tile.classList.add('correct');
+        } else if (wordleWord.includes(guessLetter)) {
+          tile.classList.add('present');
+        } else {
+          tile.classList.add('absent');
+        }
+      }
+
+      row.appendChild(tile);
+    }
+
+    wordleBoardEl.appendChild(row);
+  }
+}
+
+function handleWordleInput(letter) {
+  if (wordleSolved) return;
+  if (letter === 'BACKSPACE') {
+    currentGuess = currentGuess.slice(0, -1);
+  } else if (currentGuess.length < 5 && /^[A-Z]$/i.test(letter)) {
+    currentGuess += letter.toUpperCase();
+  }
+  wordleStatusEl.textContent = '';
+  renderWordleBoard();
+}
+
+function submitWordleGuess() {
+  if (wordleSolved) return;
+  if (currentGuess.length !== 5) {
+    wordleStatusEl.textContent = 'Guess must be 5 letters.';
+    return;
+  }
+  if (!wordBank.includes(currentGuess)) {
+    wordleStatusEl.textContent = 'Not in word list.';
+    return;
+  }
+
+  wordleGuesses.push(currentGuess);
+  const isWin = currentGuess === wordleWord;
+  if (isWin) {
+    wordleSolved = true;
+    wordleStatusEl.textContent = 'You win!';
+  } else if (wordleGuesses.length >= 6) {
+    wordleStatusEl.textContent = 'You lose! The word was ' + wordleWord;
+    wordleSolved = true;
+  } else {
+    wordleStatusEl.textContent = 'Keep going!';
+  }
+
+  currentGuess = '';
+  renderWordleBoard();
+}
+
+document.addEventListener('keydown', event => {
+  const key = event.key.toUpperCase();
+  if (/^[A-Z]$/.test(key)) handleWordleInput(key);
+  if (event.key === 'Backspace') handleWordleInput('BACKSPACE');
+  if (event.key === 'Enter') submitWordleGuess();
+});
+
+document.getElementById('new-wordle').addEventListener('click', initWordle);
+
+buildKeyboard();
+initWordle();
+startTetris();
 </script>
 </body>
 </html>
