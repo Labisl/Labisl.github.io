@@ -177,6 +177,40 @@ font-size: 1.7em;
 margin-bottom: 20px;
 }
 
+.games-toolbar {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.aero-btn {
+position: relative;
+padding: 14px 22px;
+border: 1px solid rgba(255, 255, 255, 0.7);
+border-radius: 14px;
+background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(140,180,255,0.35));
+color: #0f172a;
+font-weight: 700;
+letter-spacing: 0.04em;
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 6px 18px rgba(59,130,246,0.18), 0 2px 6px rgba(15,23,42,0.12);
+backdrop-filter: blur(6px);
+-webkit-backdrop-filter: blur(6px);
+cursor: pointer;
+transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.aero-btn:hover {
+transform: translateY(-1px);
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 22px rgba(59,130,246,0.2), 0 3px 8px rgba(15,23,42,0.14);
+}
+
+.aero-btn.active {
+background: linear-gradient(180deg, rgba(152,215,255,0.95), rgba(111,168,255,0.65));
+border-color: rgba(30,64,175,0.4);
+}
+
 .games-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -190,6 +224,10 @@ border-radius: 12px;
 padding: 20px;
 text-align: center;
 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.game-card.hidden {
+display: none;
 }
 
 .game-card h3 {
@@ -225,6 +263,33 @@ cursor: pointer;
 
 .game-card button:hover {
 background: #555;
+}
+
+.tetris-controls,
+.sudoku-controls {
+display: flex;
+justify-content: center;
+gap: 10px;
+flex-wrap: wrap;
+margin-top: 8px;
+}
+
+.sudoku-difficulty-wrap {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 12px;
+color: #333;
+font-size: 0.85em;
+}
+
+.sudoku-difficulty-wrap select {
+padding: 6px 10px;
+border: 1px solid #cbd5e1;
+border-radius: 6px;
+background: #fff;
 }
 
 .sudoku-board {
@@ -509,22 +574,42 @@ Your browser does not support the audio element.
 
 <section class="games-section">
   <h2>Games</h2>
+  <div class="games-toolbar">
+    <button class="aero-btn active" type="button" data-game="tetris">Tetris</button>
+    <button class="aero-btn" type="button" data-game="sudoku">Sudoku</button>
+    <button class="aero-btn" type="button" data-game="wordle">Wordle</button>
+  </div>
+
   <div class="games-grid">
-    <div class="game-card">
+    <div class="game-card" data-game="tetris">
       <h3>Tetris</h3>
       <p>No music, just blocks.</p>
       <canvas id="tetris-canvas" width="200" height="400"></canvas>
-      <button id="start-tetris">Start / Restart</button>
+      <div class="tetris-controls">
+        <button id="start-tetris">Start / Restart</button>
+        <button id="rotate-tetris">Rotate</button>
+      </div>
     </div>
 
-    <div class="game-card">
+    <div class="game-card hidden" data-game="sudoku">
       <h3>Sudoku</h3>
       <p>Fill the missing numbers.</p>
+      <div class="sudoku-difficulty-wrap">
+        <label for="sudoku-difficulty">Difficulty</label>
+        <select id="sudoku-difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
       <div id="sudoku-board" class="sudoku-board"></div>
-      <button id="reset-sudoku">Reset</button>
+      <div class="sudoku-controls">
+        <button id="new-sudoku">New Puzzle</button>
+        <button id="reset-sudoku">Reset</button>
+      </div>
     </div>
 
-    <div class="game-card">
+    <div class="game-card hidden" data-game="wordle">
       <h3>Wordle</h3>
       <p>Guess the hidden five-letter word.</p>
       <div id="wordle-board" class="wordle-board"></div>
@@ -562,6 +647,32 @@ const speed = speeds[index] || speeds[4];
 audio.playbackRate = speed;
 display.textContent = speed + 'x';
 });
+});
+
+const gameButtons = document.querySelectorAll('.aero-btn');
+const gameCards = document.querySelectorAll('.game-card');
+
+function showGame(gameName) {
+  gameButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.game === gameName));
+  gameCards.forEach(card => card.classList.toggle('hidden', card.dataset.game !== gameName));
+
+  if (gameName === 'tetris') {
+    startTetris();
+  } else {
+    pauseTetris();
+  }
+
+  if (gameName === 'sudoku') {
+    renderSudoku();
+  }
+
+  if (gameName === 'wordle') {
+    renderWordleBoard();
+  }
+}
+
+gameButtons.forEach(button => {
+  button.addEventListener('click', () => showGame(button.dataset.game));
 });
 
 const canvas = document.getElementById('tetris-canvas');
@@ -693,6 +804,28 @@ function movePiece(dx, dy) {
   return false;
 }
 
+function rotateCurrentPiece() {
+  if (!currentPiece || !running) return;
+  const rotated = rotateMatrix(currentPiece.matrix);
+  const kickPositions = [0, -1, 1, -2, 2];
+  for (const offset of kickPositions) {
+    if (!collides(currentPiece, offset, 0, rotated)) {
+      currentPiece.x += offset;
+      currentPiece.matrix = rotated;
+      drawBoard();
+      return;
+    }
+  }
+}
+
+function pauseTetris() {
+  running = false;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
+}
+
 function startTetris() {
   board = createBoard();
   currentPiece = randomPiece();
@@ -700,6 +833,7 @@ function startTetris() {
   lastTime = 0;
   running = true;
   if (animationId) cancelAnimationFrame(animationId);
+
   function gameLoop(time) {
     const delta = time - lastTime;
     if (running) {
@@ -711,24 +845,24 @@ function startTetris() {
       animationId = requestAnimationFrame(gameLoop);
     }
   }
+
+  lastTime = performance.now();
+  drawBoard();
   animationId = requestAnimationFrame(gameLoop);
 }
 
 document.getElementById('start-tetris').addEventListener('click', startTetris);
+document.getElementById('rotate-tetris').addEventListener('click', rotateCurrentPiece);
 
 document.addEventListener('keydown', event => {
-  if (!currentPiece || !running) return;
+  const activeGame = document.querySelector('.game-card:not(.hidden)')?.dataset.game;
+  if (!currentPiece || !running || activeGame !== 'tetris') return;
+
   const key = event.key.toLowerCase();
   if (key === 'arrowleft' || key === 'a') movePiece(-1, 0);
   if (key === 'arrowright' || key === 'd') movePiece(1, 0);
   if (key === 'arrowdown' || key === 's') movePiece(0, 1);
-  if (key === 'arrowup' || key === 'w') {
-    const rotated = rotateMatrix(currentPiece.matrix);
-    if (!collides(currentPiece, 0, 0, rotated)) {
-      currentPiece.matrix = rotated;
-      drawBoard();
-    }
-  }
+  if (key === 'arrowup' || key === 'w') rotateCurrentPiece();
   if (key === ' ') {
     while (!collides(currentPiece, 0, 1)) {
       currentPiece.y += 1;
@@ -738,20 +872,53 @@ document.addEventListener('keydown', event => {
   }
 });
 
-const sudokuPuzzle = [
-  [5, 3, 0, 0, 7, 0, 0, 0, 0],
-  [6, 0, 0, 1, 9, 5, 0, 0, 0],
-  [0, 9, 8, 0, 0, 0, 0, 6, 0],
-  [8, 0, 0, 0, 6, 0, 0, 0, 3],
-  [4, 0, 0, 8, 0, 3, 0, 0, 1],
-  [7, 0, 0, 0, 2, 0, 0, 0, 6],
-  [0, 6, 0, 0, 0, 0, 2, 8, 0],
-  [0, 0, 0, 4, 1, 9, 0, 0, 5],
-  [0, 0, 0, 0, 8, 0, 0, 7, 9]
-];
+const sudokuPuzzles = {
+  easy: [
+    [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+  ],
+  medium: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 3, 0, 8, 5],
+    [0, 0, 1, 0, 2, 0, 0, 0, 0],
+    [0, 0, 0, 5, 0, 7, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 1, 0, 0],
+    [0, 9, 0, 0, 0, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0, 0, 7, 3],
+    [0, 0, 2, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 4, 0, 0, 0, 9]
+  ],
+  hard: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ]
+};
 
 const sudokuBoard = document.getElementById('sudoku-board');
+const sudokuDifficulty = document.getElementById('sudoku-difficulty');
+let sudokuPuzzle = sudokuPuzzles.easy.map(row => row.slice());
 let sudokuGrid = sudokuPuzzle.map(row => row.slice());
+
+function loadSudokuPuzzle(level) {
+  const puzzle = sudokuPuzzles[level] || sudokuPuzzles.easy;
+  sudokuPuzzle = puzzle.map(row => row.slice());
+  sudokuGrid = sudokuPuzzle.map(row => row.slice());
+  renderSudoku();
+}
 
 function renderSudoku() {
   sudokuBoard.innerHTML = '';
@@ -781,12 +948,20 @@ function renderSudoku() {
   });
 }
 
+document.getElementById('new-sudoku').addEventListener('click', () => {
+  loadSudokuPuzzle(sudokuDifficulty.value);
+});
+
 document.getElementById('reset-sudoku').addEventListener('click', () => {
   sudokuGrid = sudokuPuzzle.map(row => row.slice());
   renderSudoku();
 });
 
-renderSudoku();
+sudokuDifficulty.addEventListener('change', () => {
+  loadSudokuPuzzle(sudokuDifficulty.value);
+});
+
+loadSudokuPuzzle('easy');
 
 const wordBank = ['APPLE', 'BRAVE', 'CLOUD', 'CRANE', 'DREAM', 'EARTH', 'GHOST', 'GRAIN', 'LIGHT', 'MUSIC', 'OCEAN', 'PLAIN', 'RIVER', 'SMILE', 'STONE', 'TRAIL', 'WATER', 'WORLD'];
 const wordleBoardEl = document.getElementById('wordle-board');
@@ -917,6 +1092,9 @@ function submitWordleGuess() {
 }
 
 document.addEventListener('keydown', event => {
+  const activeGame = document.querySelector('.game-card:not(.hidden)')?.dataset.game;
+  if (activeGame !== 'wordle') return;
+
   const key = event.key.toUpperCase();
   if (/^[A-Z]$/.test(key)) handleWordleInput(key);
   if (event.key === 'Backspace') handleWordleInput('BACKSPACE');
@@ -927,7 +1105,7 @@ document.getElementById('new-wordle').addEventListener('click', initWordle);
 
 buildKeyboard();
 initWordle();
-startTetris();
+showGame('tetris');
 </script>
 </body>
 </html>
