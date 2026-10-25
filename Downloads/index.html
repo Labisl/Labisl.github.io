@@ -288,6 +288,31 @@ text-align: center;
 color: #1f2937;
 text-decoration: underline;
 }
+
+.midi-player {
+display: flex;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+margin-left: 8px;
+}
+
+.midi-player button {
+padding: 9px 16px;
+background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(146,174,255,0.38));
+color: #111827;
+font-weight: 700;
+border: 1px solid rgba(255,255,255,0.95);
+border-radius: 10px;
+box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 6px 14px rgba(72,94,148,0.12);
+cursor: pointer;
+}
+
+.midi-status {
+font-size: 0.8em;
+font-weight: 700;
+color: #475569;
+}
 </style>
 </head>
 <body>
@@ -423,7 +448,7 @@ Your browser does not support the audio element.
 <div class="track-release-date"></div>
 <div class="track-controls">
 <audio controls data-loop-start="52" data-loop-end="100" data-loop-count="3">
-<source src="pencil on silent film.mid" type="audio/midi">
+<source src="pencil-on-silent-film.mid" type="audio/midi">
 Your browser does not support the audio element.
 </audio>
 <div class="speed-controls">
@@ -471,6 +496,7 @@ Your browser does not support the audio element.
 </div>
 </div>
 
+<script src="midi.js"></script>
 <script>
 const speeds = [
   0.05, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
