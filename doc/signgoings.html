@@ -30,7 +30,15 @@
         radial-gradient(ellipse at 15% 85%, rgba(111,95,255,.26), transparent 38%),
         linear-gradient(145deg, #101629, #242b48 52%, #11182d);
     }
-    #lightCanvas { position: fixed; z-index: -1; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    #lightCanvas {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: .95;
+    }
     .card {
       position: relative;
       width: min(460px, 100%);
@@ -125,9 +133,9 @@
     const storageKey = 'signgoings-count';
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let count = Number(localStorage.getItem(storageKey) || 0);
-    let program, resolutionLocation, timeLocation, buttonLocation, buttonSizeLocation, pointerLocation;
     let width = 0, height = 0, frameId = 0, lastFrame = 0, startTime = performance.now();
     let buttonCenter = [0, 0], buttonSize = [1, 1], pointer = [0, 0], audioContext;
+    let program, resolutionLocation, timeLocation, buttonLocation, buttonSizeLocation, pointerLocation;
 
     countEl.textContent = count;
 
@@ -136,7 +144,6 @@
       void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
     `;
 
-    // Single full-screen WebGL pass: procedural spectral rays, soft sun bloom, and a button halo.
     const fragmentShaderSource = `
       precision highp float;
       uniform vec2 u_resolution;
@@ -227,7 +234,6 @@
       buttonLocation = gl.getUniformLocation(program, 'u_button');
       buttonSizeLocation = gl.getUniformLocation(program, 'u_buttonSize');
       pointerLocation = gl.getUniformLocation(program, 'u_pointer');
-      gl.disable(gl.BLEND);
       gl.clearColor(0, 0, 0, 0);
       return true;
     }
@@ -235,7 +241,7 @@
     function updateButtonPosition() {
       const bounds = button.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      buttonCenter = [(bounds.left + bounds.width / 2) * dpr, (height - (bounds.top + bounds.height / 2)) * dpr];
+      buttonCenter = [bounds.left * dpr + bounds.width * dpr / 2, (height - (bounds.top * dpr + bounds.height * dpr / 2))];
       buttonSize = [bounds.width * dpr, bounds.height * dpr];
       if (!pointer[0] && !pointer[1]) pointer = [...buttonCenter];
     }
@@ -250,7 +256,7 @@
         canvas.width = pixelWidth;
         canvas.height = pixelHeight;
       }
-      if (gl) {
+      if (gl && program) {
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.useProgram(program);
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
@@ -273,7 +279,6 @@
     function animate(timestamp) {
       frameId = 0;
       if (document.hidden || reducedMotion.matches || !gl) return;
-      // Render at up to 60fps; shader work is one full-screen triangle and pauses off-tab.
       if (timestamp - lastFrame < 1000 / 60) { frameId = requestAnimationFrame(animate); return; }
       lastFrame = timestamp;
       render(timestamp);
@@ -303,7 +308,7 @@
           oscillator.start(now + index * .055); oscillator.stop(now + index * .055 + .44);
         });
       } catch (error) {
-        // Sound is optional; voting still works if Web Audio is unavailable.
+        // Optional audio; ignore if unsupported.
       }
     }
 
@@ -337,6 +342,7 @@
       void countLabel.offsetWidth;
       countLabel.classList.add('pop');
       card.classList.add('bump');
+
       const bounds = button.getBoundingClientRect();
       const ripple = document.createElement('span');
       ripple.className = 'ripple';
