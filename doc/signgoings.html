@@ -121,55 +121,169 @@
     const countLabel = document.querySelector('.count');
     const card = document.getElementById('card');
     const canvas = document.getElementById('lightCanvas');
-    const context = canvas.getContext('2d', { alpha: true });
+    const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'high-performance' });
     const storageKey = 'signgoings-count';
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let count = Number(localStorage.getItem(storageKey) || 0);
-    let width = 0, height = 0, frameId = 0, lastFrame = 0, angle = 0;
-    let audioContext;
+    let program, resolutionLocation, timeLocation, buttonLocation, buttonSizeLocation, pointerLocation;
+    let width = 0, height = 0, frameId = 0, lastFrame = 0, startTime = performance.now();
+    let buttonCenter = [0, 0], buttonSize = [1, 1], pointer = [0, 0], audioContext;
 
     countEl.textContent = count;
 
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawLight();
+    const vertexShaderSource = `
+      attribute vec2 a_position;
+      void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+    `;
+
+    // Single full-screen WebGL pass: procedural spectral rays, soft sun bloom, and a button halo.
+    const fragmentShaderSource = `
+      precision highp float;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform vec2 u_button;
+      uniform vec2 u_buttonSize;
+      uniform vec2 u_pointer;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+
+      void main() {
+        vec2 pixel = gl_FragCoord.xy;
+        vec2 sun = vec2(u_resolution.x * 0.78, u_resolution.y * 0.82);
+        vec2 sunVector = (pixel - sun) / max(u_resolution.y, 1.0);
+        float distanceFromSun = length(sunVector);
+        float angle = atan(sunVector.y, sunVector.x);
+        float rotation = u_time * 0.055;
+
+        float rayFine = pow(max(0.0, cos(angle * 31.0 + rotation)), 24.0);
+        float rayWide = pow(max(0.0, cos(angle * 13.0 - rotation * 0.7)), 11.0);
+        float rayGlint = pow(max(0.0, cos(angle * 47.0 + rotation * 1.4)), 48.0);
+        float radialFade = 1.0 - smoothstep(0.08, 1.12, distanceFromSun);
+        float sunCore = exp(-distanceFromSun * 8.0);
+        float beams = (rayFine * 0.13 + rayWide * 0.075 + rayGlint * 0.055) * radialFade;
+
+        float buttonDistance = length((pixel - u_button) / max(u_buttonSize * vec2(0.82, 2.8), vec2(1.0)));
+        float buttonHalo = exp(-buttonDistance * 2.8) * (1.0 - smoothstep(1.25, 2.1, buttonDistance));
+        float pointerDistance = length((pixel - u_pointer) / max(u_resolution.y * 0.22, 1.0));
+        float pointerGlow = exp(-pointerDistance * 3.2) * 0.08;
+
+        float colorWave = 0.5 + 0.5 * sin(angle * 2.0 + u_time * 0.12 + distanceFromSun * 3.0);
+        vec3 warm = vec3(1.0, 0.49, 0.32);
+        vec3 pink = vec3(1.0, 0.30, 0.76);
+        vec3 cyan = vec3(0.31, 0.78, 1.0);
+        vec3 prism = mix(mix(warm, pink, smoothstep(0.12, 0.72, colorWave)), cyan, smoothstep(0.62, 1.0, colorWave));
+        vec3 color = prism * (beams + sunCore * 0.17);
+        color += vec3(1.0, 0.76, 0.44) * sunCore * 0.11;
+        color += mix(vec3(0.72, 0.43, 1.0), vec3(0.34, 0.82, 1.0), colorWave) * buttonHalo * 0.24;
+        color += vec3(1.0, 0.84, 0.98) * pointerGlow;
+
+        float alpha = clamp(beams * 0.9 + sunCore * 0.14 + buttonHalo * 0.3 + pointerGlow * 0.35, 0.0, 0.48);
+        float grain = (hash(floor(pixel * 0.5) + floor(u_time * 8.0)) - 0.5) * 0.008 * alpha;
+        color = max(color + grain, vec3(0.0));
+        gl_FragColor = vec4(color * alpha, alpha);
+      }
+    `;
+
+    function compileShader(type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.warn('WebGL shader compilation failed:', gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
     }
 
-    function drawLight() {
-      if (!context) return;
-      context.clearRect(0, 0, width, height);
-      const cx = width * .78, cy = height * .16, radius = Math.max(width, height) * .9;
-      for (let i = 0; i < 18; i++) {
-        const start = angle + (i / 18) * Math.PI * 2;
-        const span = .035 + (i % 3) * .012;
-        const hue = (38 + i * 19) % 360;
-        const gradient = context.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        gradient.addColorStop(0, `hsla(${hue},100%,77%,.12)`);
-        gradient.addColorStop(1, `hsla(${hue},100%,70%,0)`);
-        context.beginPath(); context.moveTo(cx, cy); context.arc(cx, cy, radius, start, start + span); context.closePath();
-        context.fillStyle = gradient; context.fill();
+    function initWebGL() {
+      if (!gl) return false;
+      const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
+      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+      if (!vertexShader || !fragmentShader) return false;
+      program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.warn('WebGL program linking failed:', gl.getProgramInfoLog(program));
+        return false;
       }
-      const glow = context.createRadialGradient(cx, cy, 0, cx, cy, radius * .42);
-      glow.addColorStop(0, 'rgba(255,236,190,.19)'); glow.addColorStop(1, 'rgba(255,180,120,0)');
-      context.fillStyle = glow; context.fillRect(0, 0, width, height);
+
+      gl.useProgram(program);
+      const vertices = new Float32Array([-1, -1, 3, -1, -1, 3]);
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      const positionLocation = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+      timeLocation = gl.getUniformLocation(program, 'u_time');
+      buttonLocation = gl.getUniformLocation(program, 'u_button');
+      buttonSizeLocation = gl.getUniformLocation(program, 'u_buttonSize');
+      pointerLocation = gl.getUniformLocation(program, 'u_pointer');
+      gl.disable(gl.BLEND);
+      gl.clearColor(0, 0, 0, 0);
+      return true;
+    }
+
+    function updateButtonPosition() {
+      const bounds = button.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      buttonCenter = [(bounds.left + bounds.width / 2) * dpr, (height - (bounds.top + bounds.height / 2)) * dpr];
+      buttonSize = [bounds.width * dpr, bounds.height * dpr];
+      if (!pointer[0] && !pointer[1]) pointer = [...buttonCenter];
+    }
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const pixelWidth = Math.round(width * dpr);
+      const pixelHeight = Math.round(height * dpr);
+      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+        canvas.width = pixelWidth;
+        canvas.height = pixelHeight;
+      }
+      if (gl) {
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.useProgram(program);
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+      }
+      updateButtonPosition();
+      render(performance.now());
+    }
+
+    function render(timestamp) {
+      if (!gl || !program) return;
+      gl.useProgram(program);
+      gl.uniform1f(timeLocation, (timestamp - startTime) * 0.001);
+      gl.uniform2f(buttonLocation, buttonCenter[0], buttonCenter[1]);
+      gl.uniform2f(buttonSizeLocation, buttonSize[0], buttonSize[1]);
+      gl.uniform2f(pointerLocation, pointer[0], pointer[1]);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
 
     function animate(timestamp) {
       frameId = 0;
-      if (document.hidden || reducedMotion.matches) return;
-      if (timestamp - lastFrame < 33) { frameId = requestAnimationFrame(animate); return; }
-      lastFrame = timestamp; angle += .0018; drawLight(); frameId = requestAnimationFrame(animate);
-    }
-    function startAnimation() {
-      if (!reducedMotion.matches && !document.hidden && !frameId) frameId = requestAnimationFrame(animate);
+      if (document.hidden || reducedMotion.matches || !gl) return;
+      // Render at up to 60fps; shader work is one full-screen triangle and pauses off-tab.
+      if (timestamp - lastFrame < 1000 / 60) { frameId = requestAnimationFrame(animate); return; }
+      lastFrame = timestamp;
+      render(timestamp);
+      frameId = requestAnimationFrame(animate);
     }
 
-    // Create a soft two-note chime with Web Audio after the user's click (no audio files or autoplay).
+    function startAnimation() {
+      if (!reducedMotion.matches && !document.hidden && !frameId && gl) frameId = requestAnimationFrame(animate);
+    }
+
     function playClickChime() {
       try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -189,24 +303,28 @@
           oscillator.start(now + index * .055); oscillator.stop(now + index * .055 + .44);
         });
       } catch (error) {
-        // Sound is optional; voting should still work if Web Audio is unavailable.
+        // Sound is optional; voting still works if Web Audio is unavailable.
       }
     }
 
     window.addEventListener('resize', resizeCanvas, { passive: true });
+    window.addEventListener('scroll', updateButtonPosition, { passive: true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && frameId) { cancelAnimationFrame(frameId); frameId = 0; }
       else startAnimation();
     });
     reducedMotion.addEventListener?.('change', () => {
-      if (reducedMotion.matches && frameId) { cancelAnimationFrame(frameId); frameId = 0; drawLight(); }
+      if (reducedMotion.matches && frameId) { cancelAnimationFrame(frameId); frameId = 0; render(performance.now()); }
       else startAnimation();
     });
 
     button.addEventListener('pointermove', (event) => {
       const bounds = button.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       button.style.setProperty('--pointer-x', `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
       button.style.setProperty('--pointer-y', `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+      pointer = [event.clientX * dpr, (height - event.clientY) * dpr];
+      if (reducedMotion.matches) render(performance.now());
     }, { passive: true });
 
     button.addEventListener('click', (event) => {
@@ -219,7 +337,6 @@
       void countLabel.offsetWidth;
       countLabel.classList.add('pop');
       card.classList.add('bump');
-
       const bounds = button.getBoundingClientRect();
       const ripple = document.createElement('span');
       ripple.className = 'ripple';
@@ -230,6 +347,7 @@
       ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
     });
 
+    if (!initWebGL()) canvas.style.display = 'none';
     resizeCanvas();
     startAnimation();
   </script>
