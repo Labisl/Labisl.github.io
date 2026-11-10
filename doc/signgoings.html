@@ -35,19 +35,83 @@
       margin: 14px 0;
     }
     button {
-      background: #f59e0b;
-      color: #111827;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 22px;
-      font-size: 1rem;
-      font-weight: bold;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-width: 170px;
+      padding: 15px 28px;
+      border: 1px solid #fff3bd;
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.22) 23%, transparent 48%),
+        linear-gradient(180deg, #ffe68b 0%, #ffc43d 24%, #f49a12 58%, #d96a00 100%);
+      color: #472400;
+      font: 800 1rem/1 Arial, sans-serif;
+      letter-spacing: 0.09em;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.65);
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease;
+      box-shadow:
+        0 7px 0 #9c4c08,
+        0 10px 18px rgba(0,0,0,0.42),
+        inset 0 2px 3px rgba(255,255,255,0.95),
+        inset 0 -3px 5px rgba(139,61,0,0.5);
+      transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 5px;
+      left: 12%;
+      width: 76%;
+      height: 35%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.08));
+      filter: blur(1px);
+      pointer-events: none;
+    }
+    button::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -55%;
+      left: -38%;
+      width: 34%;
+      height: 210%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+      transform: rotate(25deg);
+      transition: left 450ms ease;
+      pointer-events: none;
     }
     button:hover {
-      transform: translateY(-1px);
-      opacity: 0.96;
+      transform: translateY(-2px);
+      filter: brightness(1.09) saturate(1.08);
+      box-shadow:
+        0 9px 0 #9c4c08,
+        0 14px 24px rgba(0,0,0,0.48),
+        inset 0 2px 3px rgba(255,255,255,0.98),
+        inset 0 -3px 5px rgba(139,61,0,0.45);
+    }
+    button:hover::after {
+      left: 115%;
+    }
+    button:active {
+      transform: translateY(5px);
+      filter: brightness(0.98);
+      box-shadow:
+        0 2px 0 #9c4c08,
+        0 4px 9px rgba(0,0,0,0.38),
+        inset 0 2px 5px rgba(139,61,0,0.35);
+    }
+    button:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 5px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      button,
+      button::after {
+        transition: none;
+      }
     }
     .count {
       display: inline-block;
