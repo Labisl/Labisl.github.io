@@ -70,7 +70,7 @@
         linear-gradient(115deg, #ffe8ac 0%, #ffc1a8 34%, #e8b9ff 66%, #a9eaff 100%);
       font: 900 1rem/1 "Segoe UI", Arial, sans-serif; letter-spacing: .2em; text-shadow: 0 1px 0 rgba(255,255,255,.8);
       cursor: pointer; transform: translateY(0);
-      box-shadow: 0 2px 0 rgba(255,255,255,.78), 0 8px 0 #594b79, 0 15px 26px rgba(0,0,0,.4), 0 0 32px rgba(208,170,255,.32), inset 0 3px 4px rgba(255,255,255,.95), inset 0 -8px 12px rgba(81,58,119,.24);
+      box-shadow: 0 2px 0 rgba(255,255,255,.78), 0 8px 0 #594b79, 0 15px 26px rgba(0,0,0,.4), 0 0 32px rgba(208,170,255,.32), inset 0 3px 4px rgba(255,255,255,.95), inset 0 -8px 12px rgba(81,58,119,.2),
       transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
       animation: breathe 4s ease-in-out infinite;
     }
@@ -85,7 +85,7 @@
     }
     #addButton:hover {
       z-index: 2; transform: translateY(-6px) scale(1.045); filter: brightness(1.1) saturate(1.17);
-      box-shadow: 0 3px 0 #fff0c8, 0 10px 0 #594b79, 0 22px 34px rgba(0,0,0,.45), 0 0 24px rgba(255,240,205,.7), 0 0 60px rgba(188,145,255,.45), inset 0 3px 4px #fff, inset 0 -8px 12px rgba(81,58,119,.2);
+      box-shadow: 0 3px 0 #fff0c8, 0 10px 0 #594b79, 0 22px 34px rgba(0,0,0,.45), 0 0 24px rgba(255,240,205,.7), 0 0 60px rgba(188,145,255,.45), inset 0 3px 4px #fff, inset 0 -8px 12px rgba(81,58,119,.24);
     }
     #addButton:hover::after { animation: shine .9s cubic-bezier(.2,.65,.3,1) forwards; }
     #addButton:active { transform: translateY(5px) scale(.985); box-shadow: 0 1px 0 #594b79, 0 4px 8px rgba(0,0,0,.4), inset 0 4px 9px rgba(81,58,119,.35); }
@@ -131,8 +131,9 @@
     const canvas = document.getElementById('lightCanvas');
     const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'high-performance' });
     const storageKey = 'signgoings-count';
+    localStorage.removeItem(storageKey);
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let count = Number(localStorage.getItem(storageKey) || 0);
+    let count = 0;
     let width = 0, height = 0, frameId = 0, lastFrame = 0, startTime = performance.now();
     let buttonCenter = [0, 0], buttonSize = [1, 1], pointer = [0, 0], audioContext;
     let program, resolutionLocation, timeLocation, buttonLocation, buttonSizeLocation, pointerLocation;
@@ -269,7 +270,7 @@
       if (!gl || !program) return;
       gl.useProgram(program);
       gl.uniform1f(timeLocation, (timestamp - startTime) * 0.001);
-      gl.uniform2f(buttonLocation, buttonCenter[0], buttonCenter[1]);
+      gl.uniform2f(buttonLocation, buttonCenter[0], buttonLocation[1]);
       gl.uniform2f(buttonSizeLocation, buttonSize[0], buttonSize[1]);
       gl.uniform2f(pointerLocation, pointer[0], pointer[1]);
       gl.clear(gl.COLOR_BUFFER_BIT);
