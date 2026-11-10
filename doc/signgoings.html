@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101426">
   <title>Sign Goings</title>
   <style>
     :root {
       color-scheme: dark;
-      --gold-light: #fff8df;
-      --gold: #f7c45c;
-      --amber: #e99032;
-      --copper: #a64e20;
-      --ink: #45280f;
+      --gold-light: #fff9d8;
+      --gold: #ffd35e;
+      --orange: #ff803d;
+      --pink: #ff4db8;
+      --blue: #70dcff;
+      --ink: #55220d;
     }
 
     * { box-sizing: border-box; }
@@ -25,34 +27,64 @@
       display: grid;
       place-items: center;
       padding: 24px;
-      color: #fff8e9;
+      color: #fff9ee;
       font-family: "Segoe UI", Arial, sans-serif;
       text-align: center;
       background:
-        radial-gradient(ellipse at 74% 14%, rgba(255, 202, 111, .55), transparent 28%),
-        radial-gradient(ellipse at 76% 18%, rgba(255, 237, 191, .22), transparent 42%),
-        linear-gradient(155deg, #182333 0%, #344253 48%, #172334 100%);
+        radial-gradient(ellipse at 75% 18%, rgba(255, 171, 81, .25), transparent 28%),
+        radial-gradient(ellipse at 20% 82%, rgba(161, 67, 255, .18), transparent 32%),
+        linear-gradient(145deg, #11172b 0%, #29314b 48%, #121a2d 100%);
     }
 
-    /* Sunlight breaking through a rainy window. */
-    body::before {
-      content: "";
+    /* Big, prismatic sunbeams: intentionally dramatic, like sunlight through a kaleidoscope. */
+    .sunburst {
       position: fixed;
-      z-index: -1;
-      inset: -35%;
+      z-index: -2;
+      top: -34vmin;
+      right: -24vmin;
+      width: min(105vmin, 1000px);
+      aspect-ratio: 1;
+      border-radius: 50%;
       pointer-events: none;
-      background: conic-gradient(from 224deg at 73% 26%, transparent 0 7deg, rgba(255, 222, 164, .09) 10deg, transparent 24deg, rgba(255, 213, 145, .06) 34deg, transparent 52deg);
-      filter: blur(18px);
-      animation: sunDrift 18s ease-in-out infinite alternate;
+      opacity: .9;
+      background:
+        repeating-conic-gradient(from -12deg at 50% 50%,
+          rgba(255, 223, 91, .00) 0deg 7deg,
+          rgba(255, 228, 118, .22) 8deg 10deg,
+          rgba(255, 113, 122, .16) 11deg 12deg,
+          rgba(133, 111, 255, .00) 14deg 19deg,
+          rgba(255, 116, 209, .2) 20deg 21deg,
+          rgba(107, 218, 255, .00) 23deg 29deg),
+        radial-gradient(circle, rgba(255, 239, 177, .46) 0 2%, rgba(255, 180, 85, .2) 9%, transparent 58%);
+      filter: blur(2px) saturate(1.35);
+      mask-image: radial-gradient(circle, #000 0 20%, rgba(0,0,0,.8) 44%, transparent 72%);
+      animation: sunTurn 42s linear infinite, sunBreathe 8s ease-in-out infinite alternate;
     }
 
-    /* Fine diagonal rain, with a second distant layer. */
+    .sunburst::before,
+    .sunburst::after {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: 50%;
+      background: conic-gradient(from 25deg, transparent, rgba(255, 73, 176, .24), transparent 18%, rgba(73, 218, 255, .23), transparent 39%, rgba(255, 218, 79, .3), transparent 62%, rgba(166, 112, 255, .25), transparent 82%);
+      filter: blur(14px);
+      animation: sunTurn 27s linear infinite reverse;
+    }
+
+    .sunburst::after {
+      inset: 31%;
+      background: radial-gradient(circle, rgba(255, 251, 211, .9), rgba(255, 191, 83, .4) 23%, rgba(255, 96, 156, .18) 49%, transparent 72%);
+      filter: blur(22px);
+      animation: sunPulse 4s ease-in-out infinite alternate;
+    }
+
     .rain {
       position: fixed;
       z-index: -1;
       inset: -30% -10%;
       pointer-events: none;
-      opacity: .48;
+      opacity: .3;
       background-image:
         repeating-linear-gradient(108deg, transparent 0 35px, rgba(222, 238, 255, .16) 36px, transparent 38px, transparent 74px),
         repeating-linear-gradient(108deg, transparent 0 82px, rgba(255, 228, 176, .11) 83px, transparent 85px, transparent 150px);
@@ -63,87 +95,98 @@
 
     .card {
       position: relative;
-      width: min(440px, 100%);
-      padding: 38px 28px 30px;
+      width: min(460px, 100%);
+      padding: 42px 30px 32px;
       overflow: hidden;
-      border: 1px solid rgba(255, 244, 215, .28);
-      border-radius: 22px;
-      background: linear-gradient(145deg, rgba(255,255,255,.13), rgba(20,29,43,.62) 38%, rgba(13,20,31,.76));
-      box-shadow: 0 28px 70px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(255,255,255,.06);
-      -webkit-backdrop-filter: blur(14px) saturate(1.25);
-      backdrop-filter: blur(14px) saturate(1.25);
+      border: 1px solid rgba(255, 244, 215, .34);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(29,31,54,.72) 40%, rgba(12,18,34,.82));
+      box-shadow: 0 30px 90px rgba(0,0,0,.48), 0 0 65px rgba(255,127,99,.12), inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.08);
+      -webkit-backdrop-filter: blur(17px) saturate(1.4);
+      backdrop-filter: blur(17px) saturate(1.4);
     }
 
     .card::before {
       content: "";
       position: absolute;
-      top: -105px;
-      right: -80px;
-      width: 260px;
-      height: 180px;
+      top: -130px;
+      right: -90px;
+      width: 290px;
+      height: 220px;
       border-radius: 50%;
-      background: rgba(255, 203, 117, .2);
-      filter: blur(55px);
+      background: rgba(255, 183, 96, .3);
+      filter: blur(65px);
       pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(125deg, rgba(255,255,255,.12), transparent 28% 72%, rgba(114,211,255,.08));
     }
 
     h1 {
       position: relative;
       margin: 0 0 12px;
-      font-size: 2rem;
+      font-size: clamp(2rem, 8vw, 2.45rem);
       letter-spacing: .045em;
-      text-shadow: 0 2px 18px rgba(255, 218, 154, .22);
+      text-shadow: 0 2px 22px rgba(255, 218, 154, .34);
     }
 
     p {
       position: relative;
       margin: 14px 0;
-      color: rgba(255, 250, 239, .87);
+      color: rgba(255, 250, 239, .9);
       font-size: 1.05rem;
       line-height: 1.6;
     }
 
     #addButton {
       --pointer-x: 50%;
-      --pointer-y: 26%;
+      --pointer-y: 24%;
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      min-width: 196px;
-      margin: 12px 0 4px;
-      padding: 17px 32px 16px;
-      border: 1px solid rgba(255, 249, 218, .92);
+      min-width: 218px;
+      margin: 16px 0 5px;
+      padding: 19px 36px 18px;
+      border: 1px solid rgba(255, 252, 226, .98);
       border-radius: 999px;
       color: var(--ink);
       background:
-        radial-gradient(ellipse at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.95), transparent 33%),
-        linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.52) 5%, rgba(255,255,255,.1) 23%, transparent 43%),
-        linear-gradient(180deg, #fff4bd 0%, #ffda7c 16%, #f5b64b 39%, #e28a35 72%, #bd5c25 100%);
-      font: 800 1rem/1 "Segoe UI", Arial, sans-serif;
-      letter-spacing: .16em;
-      text-shadow: 0 1px 0 rgba(255,255,255,.78);
+        radial-gradient(ellipse at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.98), transparent 27%),
+        linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(255,255,255,.57) 5%, rgba(255,255,255,.12) 21%, transparent 43%),
+        linear-gradient(105deg, transparent 0 9%, rgba(255,255,255,.34) 10%, transparent 16% 79%, rgba(255,255,255,.2) 82%, transparent 89%),
+        linear-gradient(180deg, #fff8c9 0%, #ffe286 17%, #ffc04e 40%, #ff8e3f 72%, #d8542c 100%);
+      font: 900 1rem/1 "Segoe UI", Arial, sans-serif;
+      letter-spacing: .19em;
+      text-shadow: 0 1px 0 rgba(255,255,255,.88), 0 2px 3px rgba(117,53,14,.2);
       cursor: pointer;
       transform: translateY(0);
       box-shadow:
-        0 5px 0 #773b1c,
-        0 9px 13px rgba(0,0,0,.34),
-        0 0 0 1px rgba(96,48,18,.45),
-        0 0 22px rgba(255,193,89,.2),
-        inset 0 2px 2px rgba(255,255,255,.96),
-        inset 0 -5px 9px rgba(117,53,14,.4);
-      transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
-      animation: buttonBreathe 4s ease-in-out infinite;
+        0 3px 0 #ffcf69,
+        0 7px 0 #843d20,
+        0 12px 19px rgba(0,0,0,.42),
+        0 0 0 1px rgba(96,48,18,.5),
+        0 0 26px rgba(255,193,89,.35),
+        inset 0 3px 3px rgba(255,255,255,.98),
+        inset 0 -7px 11px rgba(117,53,14,.45);
+      transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, filter .24s ease;
+      animation: buttonBreathe 3.8s ease-in-out infinite;
     }
 
     #addButton::before {
       content: "";
       position: absolute;
       z-index: -1;
-      inset: 3px 9px auto;
-      height: 42%;
+      inset: 4px 11px auto;
+      height: 43%;
       border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.22) 50%, transparent);
-      box-shadow: 0 1px 0 rgba(255,255,255,.32);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.34) 50%, transparent);
+      box-shadow: 0 1px 0 rgba(255,255,255,.42);
       pointer-events: none;
     }
 
@@ -151,12 +194,12 @@
       content: "";
       position: absolute;
       z-index: 1;
-      top: -65%;
-      bottom: -65%;
-      left: -48%;
-      width: 27%;
+      top: -75%;
+      bottom: -75%;
+      left: -55%;
+      width: 31%;
       border-radius: 50%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.86), rgba(255,250,222,.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), rgba(255,250,222,.62), transparent);
       filter: blur(2px);
       transform: rotate(23deg);
       opacity: 0;
@@ -165,31 +208,28 @@
 
     #addButton:hover {
       z-index: 2;
-      transform: translateY(-5px) scale(1.035);
-      filter: brightness(1.08) saturate(1.12);
+      transform: translateY(-6px) scale(1.055);
+      filter: brightness(1.12) saturate(1.18);
       box-shadow:
-        0 8px 0 #773b1c,
-        0 17px 25px rgba(0,0,0,.42),
-        0 0 12px rgba(255,221,154,.5),
-        0 0 38px rgba(255,174,70,.34),
-        inset 0 2px 3px #fff,
-        inset 0 -5px 9px rgba(117,53,14,.38);
+        0 3px 0 #ffe49a,
+        0 9px 0 #843d20,
+        0 20px 30px rgba(0,0,0,.46),
+        0 0 15px rgba(255,238,172,.75),
+        0 0 48px rgba(255,132,88,.58),
+        0 0 78px rgba(255,76,184,.24),
+        inset 0 3px 4px #fff,
+        inset 0 -7px 11px rgba(117,53,14,.38);
     }
 
-    #addButton:hover::after {
-      animation: glassSweep .9s cubic-bezier(.2,.65,.3,1) forwards;
-    }
+    #addButton:hover::after { animation: glassSweep 1s cubic-bezier(.2,.65,.3,1) forwards; }
 
     #addButton:active {
-      transform: translateY(3px) scale(.985);
-      filter: brightness(.98);
-      box-shadow: 0 2px 0 #773b1c, 0 4px 8px rgba(0,0,0,.38), inset 0 3px 7px rgba(96,43,12,.42);
+      transform: translateY(5px) scale(.98);
+      filter: brightness(1.02);
+      box-shadow: 0 1px 0 #773b1c, 0 3px 7px rgba(0,0,0,.4), inset 0 4px 9px rgba(96,43,12,.45);
     }
 
-    #addButton:focus-visible {
-      outline: 3px solid #fff4c9;
-      outline-offset: 6px;
-    }
+    #addButton:focus-visible { outline: 3px solid #fff4c9; outline-offset: 7px; }
 
     #addButton .ripple {
       position: absolute;
@@ -197,7 +237,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: rgba(255,255,255,.72);
+      background: rgba(255,255,255,.82);
       transform: translate(-50%, -50%) scale(0);
       animation: ripple .65s ease-out forwards;
       pointer-events: none;
@@ -205,33 +245,30 @@
 
     .count {
       display: inline-block;
-      margin-top: 16px;
-      color: #ffdc8a;
-      font-size: 1.5rem;
-      font-weight: 800;
-      text-shadow: 0 0 18px rgba(255, 195, 91, .35);
+      margin-top: 17px;
+      color: #ffe18d;
+      font-size: 1.55rem;
+      font-weight: 900;
+      text-shadow: 0 0 22px rgba(255, 195, 91, .5);
     }
 
     @keyframes rainFall {
       from { background-position: 0 0, 0 0; }
       to { background-position: -48px 230px, -90px 360px; }
     }
-    @keyframes sunDrift {
-      from { transform: translate3d(-1%, 0, 0) rotate(-2deg); opacity: .65; }
-      to { transform: translate3d(2%, 1%, 0) rotate(2deg); opacity: 1; }
-    }
+    @keyframes sunTurn { to { transform: rotate(360deg); } }
+    @keyframes sunBreathe { from { opacity: .65; scale: .96; } to { opacity: 1; scale: 1.04; } }
+    @keyframes sunPulse { from { opacity: .65; scale: .9; } to { opacity: 1; scale: 1.12; } }
     @keyframes buttonBreathe {
-      0%, 100% { box-shadow: 0 5px 0 #773b1c, 0 9px 13px rgba(0,0,0,.34), 0 0 0 1px rgba(96,48,18,.45), 0 0 22px rgba(255,193,89,.2), inset 0 2px 2px rgba(255,255,255,.96), inset 0 -5px 9px rgba(117,53,14,.4); }
-      50% { box-shadow: 0 5px 0 #773b1c, 0 10px 15px rgba(0,0,0,.36), 0 0 0 1px rgba(96,48,18,.45), 0 0 29px rgba(255,193,89,.29), inset 0 2px 2px rgba(255,255,255,.96), inset 0 -5px 9px rgba(117,53,14,.4); }
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.08); }
     }
     @keyframes glassSweep {
-      from { left: -48%; opacity: 0; }
-      12% { opacity: .9; }
-      to { left: 125%; opacity: 0; }
+      from { left: -55%; opacity: 0; }
+      12% { opacity: 1; }
+      to { left: 130%; opacity: 0; }
     }
-    @keyframes ripple {
-      to { transform: translate(-50%, -50%) scale(18); opacity: 0; }
-    }
+    @keyframes ripple { to { transform: translate(-50%, -50%) scale(18); opacity: 0; } }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -245,6 +282,7 @@
   </style>
 </head>
 <body>
+  <div class="sunburst" aria-hidden="true"></div>
   <div class="rain" aria-hidden="true"></div>
   <main class="card">
     <h1>Sign Goings</h1>
