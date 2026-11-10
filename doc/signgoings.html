@@ -8,114 +8,65 @@
   <style>
     :root {
       color-scheme: dark;
-      --gold-light: #fff9d8;
-      --gold: #ffd35e;
-      --orange: #ff803d;
-      --pink: #ff4db8;
-      --blue: #70dcff;
-      --ink: #55220d;
+      font-family: "Segoe UI", Arial, sans-serif;
+      --glass: rgba(26, 31, 54, .58);
+      --text: #fffaf1;
+      --gold: #ffe6a0;
+      --pointer-x: 50%;
+      --pointer-y: 20%;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
       min-height: 100vh;
+      min-height: 100svh;
       margin: 0;
       display: grid;
       place-items: center;
+      overflow: hidden;
+      isolation: isolate;
       padding: 24px;
-      color: #fff9ee;
-      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
       text-align: center;
       background:
-        radial-gradient(ellipse at 75% 18%, rgba(255, 171, 81, .25), transparent 28%),
-        radial-gradient(ellipse at 20% 82%, rgba(161, 67, 255, .18), transparent 32%),
-        linear-gradient(145deg, #11172b 0%, #29314b 48%, #121a2d 100%);
+        radial-gradient(ellipse at 75% 15%, rgba(255, 139, 103, .3), transparent 34%),
+        radial-gradient(ellipse at 15% 85%, rgba(111, 95, 255, .26), transparent 38%),
+        linear-gradient(145deg, #101629, #242b48 52%, #11182d);
     }
 
-    /* Big, prismatic sunbeams: intentionally dramatic, like sunlight through a kaleidoscope. */
-    .sunburst {
-      position: fixed;
-      z-index: -2;
-      top: -34vmin;
-      right: -24vmin;
-      width: min(105vmin, 1000px);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: .9;
-      background:
-        repeating-conic-gradient(from -12deg at 50% 50%,
-          rgba(255, 223, 91, .00) 0deg 7deg,
-          rgba(255, 228, 118, .22) 8deg 10deg,
-          rgba(255, 113, 122, .16) 11deg 12deg,
-          rgba(133, 111, 255, .00) 14deg 19deg,
-          rgba(255, 116, 209, .2) 20deg 21deg,
-          rgba(107, 218, 255, .00) 23deg 29deg),
-        radial-gradient(circle, rgba(255, 239, 177, .46) 0 2%, rgba(255, 180, 85, .2) 9%, transparent 58%);
-      filter: blur(2px) saturate(1.35);
-      mask-image: radial-gradient(circle, #000 0 20%, rgba(0,0,0,.8) 44%, transparent 72%);
-      animation: sunTurn 42s linear infinite, sunBreathe 8s ease-in-out infinite alternate;
-    }
-
-    .sunburst::before,
-    .sunburst::after {
-      content: "";
-      position: absolute;
-      inset: 14%;
-      border-radius: 50%;
-      background: conic-gradient(from 25deg, transparent, rgba(255, 73, 176, .24), transparent 18%, rgba(73, 218, 255, .23), transparent 39%, rgba(255, 218, 79, .3), transparent 62%, rgba(166, 112, 255, .25), transparent 82%);
-      filter: blur(14px);
-      animation: sunTurn 27s linear infinite reverse;
-    }
-
-    .sunburst::after {
-      inset: 31%;
-      background: radial-gradient(circle, rgba(255, 251, 211, .9), rgba(255, 191, 83, .4) 23%, rgba(255, 96, 156, .18) 49%, transparent 72%);
-      filter: blur(22px);
-      animation: sunPulse 4s ease-in-out infinite alternate;
-    }
-
-    .rain {
+    #lightCanvas {
       position: fixed;
       z-index: -1;
-      inset: -30% -10%;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      opacity: .3;
-      background-image:
-        repeating-linear-gradient(108deg, transparent 0 35px, rgba(222, 238, 255, .16) 36px, transparent 38px, transparent 74px),
-        repeating-linear-gradient(108deg, transparent 0 82px, rgba(255, 228, 176, .11) 83px, transparent 85px, transparent 150px);
-      background-size: 190px 230px, 310px 360px;
-      animation: rainFall .72s linear infinite;
-      mask-image: linear-gradient(180deg, transparent, #000 12%, #000 86%, transparent);
     }
 
     .card {
       position: relative;
       width: min(460px, 100%);
-      padding: 42px 30px 32px;
+      padding: 46px 32px 35px;
       overflow: hidden;
-      border: 1px solid rgba(255, 244, 215, .34);
-      border-radius: 28px;
-      background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(29,31,54,.72) 40%, rgba(12,18,34,.82));
-      box-shadow: 0 30px 90px rgba(0,0,0,.48), 0 0 65px rgba(255,127,99,.12), inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.08);
-      -webkit-backdrop-filter: blur(17px) saturate(1.4);
-      backdrop-filter: blur(17px) saturate(1.4);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(255,255,255,.17), var(--glass) 42%, rgba(13,17,34,.74));
+      box-shadow: 0 32px 90px rgba(0,0,0,.46), 0 0 70px rgba(255,133,132,.12), inset 0 1px 0 rgba(255,255,255,.36), inset 0 -1px 0 rgba(255,255,255,.08);
+      -webkit-backdrop-filter: blur(22px) saturate(1.45);
+      backdrop-filter: blur(22px) saturate(1.45);
     }
 
     .card::before {
       content: "";
       position: absolute;
-      top: -130px;
-      right: -90px;
-      width: 290px;
-      height: 220px;
+      top: -150px;
+      right: -100px;
+      width: 300px;
+      height: 240px;
       border-radius: 50%;
-      background: rgba(255, 183, 96, .3);
-      filter: blur(65px);
+      background: rgba(255, 184, 122, .26);
+      filter: blur(68px);
       pointer-events: none;
     }
 
@@ -125,57 +76,43 @@
       inset: 1px;
       border-radius: inherit;
       pointer-events: none;
-      background: linear-gradient(125deg, rgba(255,255,255,.12), transparent 28% 72%, rgba(114,211,255,.08));
+      background: linear-gradient(125deg, rgba(255,255,255,.12), transparent 32% 75%, rgba(115,210,255,.08));
     }
 
     h1 {
       position: relative;
       margin: 0 0 12px;
-      font-size: clamp(2rem, 8vw, 2.45rem);
+      font-size: clamp(2rem, 8vw, 2.5rem);
       letter-spacing: .045em;
-      text-shadow: 0 2px 22px rgba(255, 218, 154, .34);
+      text-shadow: 0 2px 24px rgba(255, 218, 154, .38);
     }
 
-    p {
-      position: relative;
-      margin: 14px 0;
-      color: rgba(255, 250, 239, .9);
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
+    p { position: relative; margin: 14px 0; color: rgba(255,250,239,.9); font-size: 1.05rem; line-height: 1.6; }
 
     #addButton {
       --pointer-x: 50%;
-      --pointer-y: 24%;
+      --pointer-y: 18%;
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      min-width: 218px;
-      margin: 16px 0 5px;
-      padding: 19px 36px 18px;
-      border: 1px solid rgba(255, 252, 226, .98);
+      min-width: 220px;
+      margin: 18px 0 7px;
+      padding: 19px 36px;
+      border: 1px solid rgba(255,255,255,.88);
       border-radius: 999px;
-      color: var(--ink);
+      color: #281e3c;
       background:
-        radial-gradient(ellipse at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.98), transparent 27%),
-        linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(255,255,255,.57) 5%, rgba(255,255,255,.12) 21%, transparent 43%),
-        linear-gradient(105deg, transparent 0 9%, rgba(255,255,255,.34) 10%, transparent 16% 79%, rgba(255,255,255,.2) 82%, transparent 89%),
-        linear-gradient(180deg, #fff8c9 0%, #ffe286 17%, #ffc04e 40%, #ff8e3f 72%, #d8542c 100%);
+        radial-gradient(ellipse at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.98), transparent 30%),
+        linear-gradient(145deg, rgba(255,255,255,.87), rgba(223,237,255,.27) 22%, transparent 43%),
+        linear-gradient(115deg, #ffe8ac 0%, #ffc1a8 34%, #e8b9ff 66%, #a9eaff 100%);
       font: 900 1rem/1 "Segoe UI", Arial, sans-serif;
-      letter-spacing: .19em;
-      text-shadow: 0 1px 0 rgba(255,255,255,.88), 0 2px 3px rgba(117,53,14,.2);
+      letter-spacing: .2em;
+      text-shadow: 0 1px 0 rgba(255,255,255,.8);
       cursor: pointer;
       transform: translateY(0);
-      box-shadow:
-        0 3px 0 #ffcf69,
-        0 7px 0 #843d20,
-        0 12px 19px rgba(0,0,0,.42),
-        0 0 0 1px rgba(96,48,18,.5),
-        0 0 26px rgba(255,193,89,.35),
-        inset 0 3px 3px rgba(255,255,255,.98),
-        inset 0 -7px 11px rgba(117,53,14,.45);
-      transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, filter .24s ease;
-      animation: buttonBreathe 3.8s ease-in-out infinite;
+      box-shadow: 0 2px 0 rgba(255,255,255,.78), 0 8px 0 #594b79, 0 15px 26px rgba(0,0,0,.4), 0 0 32px rgba(208,170,255,.32), inset 0 3px 4px rgba(255,255,255,.95), inset 0 -8px 12px rgba(81,58,119,.24);
+      transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
+      animation: breathe 4s ease-in-out infinite;
     }
 
     #addButton::before {
@@ -185,8 +122,7 @@
       inset: 4px 11px auto;
       height: 43%;
       border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.34) 50%, transparent);
-      box-shadow: 0 1px 0 rgba(255,255,255,.42);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.24) 54%, transparent);
       pointer-events: none;
     }
 
@@ -194,12 +130,12 @@
       content: "";
       position: absolute;
       z-index: 1;
-      top: -75%;
-      bottom: -75%;
+      top: -70%;
+      bottom: -70%;
       left: -55%;
-      width: 31%;
+      width: 30%;
       border-radius: 50%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), rgba(255,250,222,.62), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), rgba(255,255,255,.42), transparent);
       filter: blur(2px);
       transform: rotate(23deg);
       opacity: 0;
@@ -208,27 +144,13 @@
 
     #addButton:hover {
       z-index: 2;
-      transform: translateY(-6px) scale(1.055);
-      filter: brightness(1.12) saturate(1.18);
-      box-shadow:
-        0 3px 0 #ffe49a,
-        0 9px 0 #843d20,
-        0 20px 30px rgba(0,0,0,.46),
-        0 0 15px rgba(255,238,172,.75),
-        0 0 48px rgba(255,132,88,.58),
-        0 0 78px rgba(255,76,184,.24),
-        inset 0 3px 4px #fff,
-        inset 0 -7px 11px rgba(117,53,14,.38);
+      transform: translateY(-6px) scale(1.045);
+      filter: brightness(1.1) saturate(1.17);
+      box-shadow: 0 3px 0 #fff0c8, 0 10px 0 #594b79, 0 22px 34px rgba(0,0,0,.45), 0 0 24px rgba(255,240,205,.7), 0 0 60px rgba(188,145,255,.45), inset 0 3px 4px #fff, inset 0 -8px 12px rgba(81,58,119,.2);
     }
 
-    #addButton:hover::after { animation: glassSweep 1s cubic-bezier(.2,.65,.3,1) forwards; }
-
-    #addButton:active {
-      transform: translateY(5px) scale(.98);
-      filter: brightness(1.02);
-      box-shadow: 0 1px 0 #773b1c, 0 3px 7px rgba(0,0,0,.4), inset 0 4px 9px rgba(96,43,12,.45);
-    }
-
+    #addButton:hover::after { animation: shine .9s cubic-bezier(.2,.65,.3,1) forwards; }
+    #addButton:active { transform: translateY(5px) scale(.985); box-shadow: 0 1px 0 #594b79, 0 4px 8px rgba(0,0,0,.4), inset 0 4px 9px rgba(81,58,119,.35); }
     #addButton:focus-visible { outline: 3px solid #fff4c9; outline-offset: 7px; }
 
     #addButton .ripple {
@@ -237,53 +159,25 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: rgba(255,255,255,.82);
+      background: rgba(255,255,255,.85);
       transform: translate(-50%, -50%) scale(0);
       animation: ripple .65s ease-out forwards;
       pointer-events: none;
     }
 
-    .count {
-      display: inline-block;
-      margin-top: 17px;
-      color: #ffe18d;
-      font-size: 1.55rem;
-      font-weight: 900;
-      text-shadow: 0 0 22px rgba(255, 195, 91, .5);
-    }
+    .count { display: inline-block; margin-top: 18px; color: var(--gold); font-size: 1.55rem; font-weight: 900; text-shadow: 0 0 22px rgba(255,195,91,.48); }
 
-    @keyframes rainFall {
-      from { background-position: 0 0, 0 0; }
-      to { background-position: -48px 230px, -90px 360px; }
-    }
-    @keyframes sunTurn { to { transform: rotate(360deg); } }
-    @keyframes sunBreathe { from { opacity: .65; scale: .96; } to { opacity: 1; scale: 1.04; } }
-    @keyframes sunPulse { from { opacity: .65; scale: .9; } to { opacity: 1; scale: 1.12; } }
-    @keyframes buttonBreathe {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.08); }
-    }
-    @keyframes glassSweep {
-      from { left: -55%; opacity: 0; }
-      12% { opacity: 1; }
-      to { left: 130%; opacity: 0; }
-    }
+    @keyframes shine { from { left: -55%; opacity: 0; } 12% { opacity: 1; } to { left: 130%; opacity: 0; } }
     @keyframes ripple { to { transform: translate(-50%, -50%) scale(18); opacity: 0; } }
+    @keyframes breathe { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.06); } }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-      }
-      .rain { display: none; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
-  <div class="sunburst" aria-hidden="true"></div>
-  <div class="rain" aria-hidden="true"></div>
+  <canvas id="lightCanvas" aria-hidden="true"></canvas>
   <main class="card">
     <h1>Sign Goings</h1>
     <p>Click below to add your vote.</p>
@@ -294,18 +188,99 @@
   <script>
     const button = document.getElementById('addButton');
     const countEl = document.getElementById('count');
+    const canvas = document.getElementById('lightCanvas');
+    const context = canvas.getContext('2d', { alpha: true });
     const storageKey = 'signgoings-count';
-
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let count = Number(localStorage.getItem(storageKey) || 0);
+    let width = 0;
+    let height = 0;
+    let frameId = 0;
+    let lastFrame = 0;
+    let angle = 0;
+
     countEl.textContent = count;
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawLight();
+    }
+
+    // Draw a small number of translucent beams; DPR and frame rate are capped for smooth, cool rendering.
+    function drawLight() {
+      if (!context) return;
+      context.clearRect(0, 0, width, height);
+      const cx = width * .78;
+      const cy = height * .16;
+      const radius = Math.max(width, height) * .9;
+      const rays = 18;
+
+      for (let i = 0; i < rays; i++) {
+        const start = angle + (i / rays) * Math.PI * 2;
+        const span = .035 + (i % 3) * .012;
+        const hue = (38 + i * 19) % 360;
+        const gradient = context.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        gradient.addColorStop(0, `hsla(${hue}, 100%, 77%, .12)`);
+        gradient.addColorStop(1, `hsla(${hue}, 100%, 70%, 0)`);
+        context.beginPath();
+        context.moveTo(cx, cy);
+        context.arc(cx, cy, radius, start, start + span);
+        context.closePath();
+        context.fillStyle = gradient;
+        context.fill();
+      }
+
+      const glow = context.createRadialGradient(cx, cy, 0, cx, cy, radius * .42);
+      glow.addColorStop(0, 'rgba(255, 236, 190, .19)');
+      glow.addColorStop(1, 'rgba(255, 180, 120, 0)');
+      context.fillStyle = glow;
+      context.fillRect(0, 0, width, height);
+    }
+
+    function animate(timestamp) {
+      frameId = 0;
+      if (document.hidden || reducedMotion.matches) return;
+      if (timestamp - lastFrame < 33) {
+        frameId = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrame = timestamp;
+      angle += .0018;
+      drawLight();
+      frameId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      if (!reducedMotion.matches && !document.hidden && !frameId) frameId = requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && frameId) {
+        cancelAnimationFrame(frameId);
+        frameId = 0;
+      } else {
+        startAnimation();
+      }
+    });
+    reducedMotion.addEventListener?.('change', () => {
+      if (reducedMotion.matches && frameId) {
+        cancelAnimationFrame(frameId);
+        frameId = 0;
+        drawLight();
+      } else startAnimation();
+    });
 
     button.addEventListener('pointermove', (event) => {
       const bounds = button.getBoundingClientRect();
-      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
-      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
-      button.style.setProperty('--pointer-x', `${x}%`);
-      button.style.setProperty('--pointer-y', `${y}%`);
-    });
+      button.style.setProperty('--pointer-x', `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      button.style.setProperty('--pointer-y', `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+    }, { passive: true });
 
     button.addEventListener('click', (event) => {
       count += 1;
@@ -321,6 +296,9 @@
       button.appendChild(ripple);
       ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
     });
+
+    resizeCanvas();
+    startAnimation();
   </script>
 </body>
 </html>
