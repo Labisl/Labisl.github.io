@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>labisl</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
@@ -21,7 +17,7 @@
             padding: 20px;
             color: #1f2937;
         }
-        
+
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.8);
@@ -31,7 +27,7 @@
             max-width: 520px;
             border: 1px solid rgba(107, 114, 128, 0.2);
         }
-        
+
         .visit-counter {
             position: absolute;
             top: 20px;
@@ -45,28 +41,11 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(107, 114, 128, 0.2);
         }
-        
-        h1 {
-            color: #111827;
-            margin-bottom: 12px;
-            font-size: 2.7em;
-            letter-spacing: 0.04em;
-        }
-        
-        h2 {
-            color: #374151;
-            margin-bottom: 18px;
-            font-size: 1.4em;
-            font-weight: 500;
-        }
-        
-        p {
-            color: #4b5563;
-            margin-bottom: 28px;
-            font-size: 1.05em;
-            line-height: 1.6;
-        }
-        
+
+        h1 { color: #111827; margin-bottom: 12px; font-size: 2.7em; letter-spacing: 0.04em; }
+        h2 { color: #374151; margin-bottom: 18px; font-size: 1.4em; font-weight: 500; }
+        p { color: #4b5563; margin-bottom: 28px; font-size: 1.05em; line-height: 1.6; }
+
         .btn {
             display: inline-block;
             padding: 14px 30px;
@@ -80,43 +59,88 @@
             border: none;
             cursor: pointer;
         }
-        
-        .btn:hover {
-            transform: translateY(-1px);
-            opacity: 0.92;
+        .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+        .btn:focus-visible, .signgoings-btn:focus-visible { outline: 3px solid #374151; outline-offset: 5px; }
+
+        .signgoings-btn {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 22px;
+            padding: 16px 30px;
+            border: 1px solid rgba(255,255,255,.95);
+            border-radius: 999px;
+            color: #34204e;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.98), transparent 58%),
+                linear-gradient(110deg, #ffe9a8, #ffc4cf 48%, #c9b8ff 100%);
+            box-shadow: 0 2px 0 #fff, 0 7px 0 #77649d, 0 12px 24px rgba(85,65,125,.26), 0 0 30px rgba(195,153,255,.36), inset 0 2px 3px rgba(255,255,255,.96);
+            font-weight: 850;
+            letter-spacing: .045em;
+            text-decoration: none;
+            text-shadow: 0 1px rgba(255,255,255,.8);
+            transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+            animation: attention-glow 2.6s ease-in-out infinite;
+        }
+        .signgoings-btn::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: -60%;
+            bottom: -60%;
+            left: -45%;
+            width: 30%;
+            transform: rotate(22deg);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), transparent);
+            animation: button-shine 3.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .signgoings-btn:hover {
+            transform: translateY(-5px) scale(1.045);
+            filter: saturate(1.2) brightness(1.06);
+            box-shadow: 0 3px 0 #fff, 0 10px 0 #77649d, 0 18px 32px rgba(85,65,125,.34), 0 0 48px rgba(195,153,255,.62), inset 0 2px 4px #fff;
+        }
+        .signgoings-btn:active { transform: translateY(3px) scale(.99); }
+        @keyframes button-shine {
+            0%, 15% { left: -45%; opacity: 0; }
+            28% { opacity: .95; }
+            55%, 100% { left: 125%; opacity: 0; }
+        }
+        @keyframes attention-glow {
+            0%, 100% { box-shadow: 0 2px 0 #fff, 0 7px 0 #77649d, 0 12px 24px rgba(85,65,125,.26), 0 0 25px rgba(195,153,255,.28), inset 0 2px 3px rgba(255,255,255,.96); }
+            50% { box-shadow: 0 2px 0 #fff, 0 7px 0 #77649d, 0 14px 28px rgba(85,65,125,.3), 0 0 42px rgba(195,153,255,.55), inset 0 2px 3px rgba(255,255,255,.96); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 48px 24px; }
+            .visit-counter { top: 12px; right: 12px; }
         }
     </style>
 </head>
 <body>
     <div class="visit-counter">Website visits: <span id="visit-count">0</span></div>
-    <div class="container">
+    <main class="container">
         <h1>labisl</h1>
         <h2>A secret website</h2>
         <p>This website is for kewl kids and royalty free music downloaders</p>
         <a href="Downloads/" class="btn">Browse projects</a>
-    </div>
+        <br>
+        <a href="https://labisl.github.io/doc/signgoings.html" class="signgoings-btn">✦ Check out Sign Goings ✦</a>
+    </main>
 
     <script>
-        // Initialize and update visit counter
         function updateVisitCount() {
-            // Get current visit count from localStorage
             let visitCount = localStorage.getItem('visitCount');
-            
-            // If no count exists, start at 1, otherwise increment
-            if (visitCount === null) {
-                visitCount = 1;
-            } else {
-                visitCount = parseInt(visitCount) + 1;
-            }
-            
-            // Save updated count
+            visitCount = visitCount === null ? 1 : parseInt(visitCount, 10) + 1;
             localStorage.setItem('visitCount', visitCount);
-            
-            // Display the count
             document.getElementById('visit-count').textContent = visitCount;
         }
-        
-        // Run on page load
         window.addEventListener('load', updateVisitCount);
     </script>
 </body>
