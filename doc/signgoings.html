@@ -3,360 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101426">
-  <title>the Click</title>
+  <meta name="theme-color" content="#78b9d1">
+  <title>the Click — Aero Camera Club</title>
   <style>
     :root {
-      color-scheme: dark;
-      font-family: "Segoe UI", Arial, sans-serif;
-      --glass: rgba(26, 31, 54, .58);
-      --text: #fffaf1;
-      --gold: #ffe6a0;
+      color-scheme: light;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      --ink: #20394c;
+      --glass: rgba(235, 250, 255, .52);
+      --blue: #28799d;
+      --pink: #e9818a;
     }
     * { box-sizing: border-box; }
     body {
       min-height: 100vh;
       min-height: 100svh;
       margin: 0;
+      padding: 28px;
       display: grid;
       place-items: center;
       overflow: hidden;
-      isolation: isolate;
-      padding: 24px;
-      color: var(--text);
-      text-align: center;
+      color: var(--ink);
       background:
-        radial-gradient(ellipse at 75% 15%, rgba(255,139,103,.3), transparent 34%),
-        radial-gradient(ellipse at 15% 85%, rgba(111,95,255,.26), transparent 38%),
-        linear-gradient(145deg, #101629, #242b48 52%, #11182d);
+        radial-gradient(ellipse at 50% 43%, rgba(255,244,197,.96) 0 5%, rgba(255,197,135,.62) 13%, transparent 36%),
+        radial-gradient(ellipse at 14% 12%, rgba(93,211,226,.9), transparent 35%),
+        radial-gradient(ellipse at 89% 78%, rgba(238,115,133,.78), transparent 36%),
+        linear-gradient(145deg, #76c6dc 0%, #b8e3e5 34%, #efc8b7 68%, #f1a4a0 100%);
+      isolation: isolate;
     }
-    #lightCanvas {
-      position: fixed;
+    /* Warm vignette + fine analog-film grain for a sunny 2010 point-and-shoot feel. */
+    body::before, body::after { content: ""; position: fixed; inset: 0; pointer-events: none; }
+    body::before {
       z-index: -1;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      opacity: .95;
+      background: radial-gradient(ellipse at center, transparent 38%, rgba(41,35,54,.13) 100%), linear-gradient(115deg, rgba(255,255,255,.2), transparent 40%, rgba(255,120,105,.13));
+      mix-blend-mode: multiply;
     }
+    body::after {
+      z-index: 4;
+      opacity: .14;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+    }
+    .sunflare {
+      position: fixed; z-index: -1; width: min(60vw, 650px); aspect-ratio: 1; left: 50%; top: 45%;
+      transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none;
+      background: repeating-conic-gradient(from 2deg, rgba(255,255,235,.2) 0deg 3deg, transparent 3deg 13deg);
+      mask-image: radial-gradient(circle, #000 0 9%, transparent 70%);
+      animation: sun-turn 90s linear infinite;
+    }
+    .window {
+      width: min(560px, 100%);
+      padding: 7px;
+      border: 1px solid rgba(255,255,255,.92);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(208,239,250,.38) 46%, rgba(255,255,255,.62));
+      box-shadow: 0 2px 0 rgba(255,255,255,.95) inset, 0 0 0 1px rgba(48,110,137,.25), 0 22px 65px rgba(36,67,84,.34), 0 5px 14px rgba(255,255,255,.5);
+      -webkit-backdrop-filter: blur(18px) saturate(1.45);
+      backdrop-filter: blur(18px) saturate(1.45);
+    }
+    .titlebar {
+      min-height: 38px; padding: 0 13px; display: flex; align-items: center; justify-content: space-between;
+      color: #23465b; font-size: .79rem; font-weight: 700; text-shadow: 0 1px #fff;
+      border-radius: 10px 10px 3px 3px;
+      background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(170,220,239,.58) 48%, rgba(255,255,255,.48));
+      box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 -1px 0 rgba(66,133,164,.18) inset;
+    }
+    .window-lights { display: flex; gap: 6px; }
+    .window-lights i { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(#fff, #68b7d1); border: 1px solid rgba(48,111,135,.45); box-shadow: 0 1px 2px #fff inset; }
+    .window-lights i:first-child { background: linear-gradient(#fff, #f3988a); }
     .card {
-      position: relative;
-      width: min(460px, 100%);
-      padding: 46px 32px 35px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 30px;
-      background: linear-gradient(145deg, rgba(255,255,255,.17), var(--glass) 42%, rgba(13,17,34,.74));
-      box-shadow: 0 32px 90px rgba(0,0,0,.46), 0 0 70px rgba(255,133,132,.12), inset 0 1px 0 rgba(255,255,255,.36), inset 0 -1px 0 rgba(255,255,255,.08);
-      -webkit-backdrop-filter: blur(22px) saturate(1.45);
-      backdrop-filter: blur(22px) saturate(1.45);
+      position: relative; overflow: hidden; padding: clamp(32px, 8vw, 54px) 25px 31px; text-align: center;
+      border: 1px solid rgba(255,255,255,.85); border-top-color: rgba(255,255,255,.98); border-radius: 5px 5px 10px 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,.73), rgba(244,251,248,.58) 48%, rgba(255,239,221,.56));
+      box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(76,132,153,.18), 0 8px 22px rgba(44,91,111,.17);
     }
     .card::before {
-      content: ""; position: absolute; top: -150px; right: -100px; width: 300px; height: 240px;
-      border-radius: 50%; background: rgba(255,184,122,.26); filter: blur(68px); pointer-events: none;
+      content: ""; position: absolute; width: 340px; height: 210px; top: -145px; left: 50%; transform: translateX(-50%);
+      border-radius: 50%; background: rgba(255,248,207,.9); filter: blur(32px); pointer-events: none;
     }
-    .card::after {
-      content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
-      background: linear-gradient(125deg, rgba(255,255,255,.12), transparent 32% 75%, rgba(115,210,255,.08));
-    }
-    h1 { position: relative; margin: 0 0 12px; font-size: clamp(2rem, 8vw, 2.5rem); letter-spacing: .045em; text-shadow: 0 2px 24px rgba(255,218,154,.38); }
-    p { position: relative; margin: 14px 0; color: rgba(255,250,239,.9); font-size: 1.05rem; line-height: 1.6; }
+    .badge { position: relative; display: inline-block; margin-bottom: 12px; padding: 6px 12px; border: 1px solid rgba(255,255,255,.95); border-radius: 999px; background: linear-gradient(#fff, rgba(226,246,250,.58)); box-shadow: 0 2px 7px rgba(55,111,133,.12); color: #527b8b; font-size: .68rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { position: relative; margin: 0; color: #fff; font-size: clamp(3rem, 12vw, 5rem); font-weight: 900; line-height: .98; letter-spacing: -.075em; -webkit-text-stroke: 1px rgba(255,255,255,.85); text-shadow: 0 2px 0 #6faabe, 0 4px 0 #528ba1, 0 7px 0 #397489, 0 10px 16px rgba(42,94,115,.38), 0 0 34px rgba(255,255,255,.9); }
+    .subtitle { position: relative; margin: 18px 0 22px; color: #3c6171; font-size: 1rem; line-height: 1.65; text-shadow: 0 1px rgba(255,255,255,.8); }
+    .camera-frame { position: relative; width: fit-content; margin: 0 auto; padding: 7px; border-radius: 25px; background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(128,203,220,.62) 40%, rgba(236,145,151,.62)); box-shadow: 0 2px 0 #fff inset, 0 8px 20px rgba(57,106,126,.23), 0 0 30px rgba(255,255,255,.72); }
     #addButton {
-      --pointer-x: 50%; --pointer-y: 18%;
-      position: relative; isolation: isolate; overflow: hidden; min-width: 220px; margin: 18px 0 7px; padding: 19px 36px;
-      border: 1px solid rgba(255,255,255,.88); border-radius: 999px; color: #281e3c;
-      background: radial-gradient(ellipse at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.98), transparent 30%),
-        linear-gradient(145deg, rgba(255,255,255,.87), rgba(223,237,255,.27) 22%, transparent 43%),
-        linear-gradient(115deg, #ffe8ac 0%, #ffc1a8 34%, #e8b9ff 66%, #a9eaff 100%);
-      font: 900 1rem/1 "Segoe UI", Arial, sans-serif; letter-spacing: .2em; text-shadow: 0 1px 0 rgba(255,255,255,.8);
-      cursor: pointer; transform: translateY(0);
-      box-shadow: 0 2px 0 rgba(255,255,255,.78), 0 8px 0 #594b79, 0 15px 26px rgba(0,0,0,.4), 0 0 32px rgba(208,170,255,.32), inset 0 3px 4px rgba(255,255,255,.95), inset 0 -8px 12px rgba(81,58,119,.2),
-      transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
-      animation: breathe 4s ease-in-out infinite;
+      position: relative; isolation: isolate; overflow: hidden; min-width: 230px; padding: 20px 34px;
+      border: 1px solid rgba(255,255,255,.98); border-radius: 19px; color: #23536a;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,1), transparent 58%), linear-gradient(180deg, rgba(255,255,255,.9), rgba(181,229,240,.7) 47%, rgba(105,176,199,.8));
+      box-shadow: 0 1px 0 #fff inset, 0 -2px 0 rgba(53,121,146,.22) inset, 0 3px 0 rgba(255,255,255,.96), 0 6px 0 #5291a8, 0 12px 20px rgba(45,99,119,.29), 0 0 26px rgba(255,255,255,.8);
+      font: 900 1.08rem/1 "Segoe UI", Arial, sans-serif; letter-spacing: .26em; text-shadow: 0 1px #fff;
+      cursor: pointer; transition: transform .16s ease, filter .2s ease, box-shadow .2s ease;
     }
-    #addButton::before {
-      content: ""; position: absolute; z-index: -1; inset: 4px 11px auto; height: 43%; border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.24) 54%, transparent); pointer-events: none;
-    }
-    #addButton::after {
-      content: ""; position: absolute; z-index: 1; top: -70%; bottom: -70%; left: -55%; width: 30%; border-radius: 50%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), rgba(255,255,255,.42), transparent);
-      filter: blur(2px); transform: rotate(23deg); opacity: 0; pointer-events: none;
-    }
-    #addButton:hover {
-      z-index: 2; transform: translateY(-6px) scale(1.045); filter: brightness(1.1) saturate(1.17);
-      box-shadow: 0 3px 0 #fff0c8, 0 10px 0 #594b79, 0 22px 34px rgba(0,0,0,.45), 0 0 24px rgba(255,240,205,.7), 0 0 60px rgba(188,145,255,.45), inset 0 3px 4px #fff, inset 0 -8px 12px rgba(81,58,119,.24);
-    }
-    #addButton:hover::after { animation: shine .9s cubic-bezier(.2,.65,.3,1) forwards; }
-    #addButton:active { transform: translateY(5px) scale(.985); box-shadow: 0 1px 0 #594b79, 0 4px 8px rgba(0,0,0,.4), inset 0 4px 9px rgba(81,58,119,.35); }
-    #addButton:focus-visible { outline: 3px solid #fff4c9; outline-offset: 7px; }
-    #addButton .ripple {
-      position: absolute; z-index: 3; width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.85);
-      transform: translate(-50%,-50%) scale(0); animation: ripple .65s ease-out forwards; pointer-events: none;
-    }
-    .count { display: inline-block; margin-top: 18px; color: var(--gold); font-size: 1.55rem; font-weight: 900; text-shadow: 0 0 22px rgba(255,195,91,.48); }
-    .count.pop { animation: count-pop .38s cubic-bezier(.2,.8,.2,1); }
-    .home-link {
-      position: relative; display: inline-block; margin-top: 10px; padding: 8px 14px; border-radius: 999px;
-      color: rgba(255,250,241,.76); font-size: .9rem; text-decoration: none; transition: color .2s ease, background .2s ease;
-    }
-    .home-link:hover { color: #fff; background: rgba(255,255,255,.1); }
-    .home-link:focus-visible { outline: 2px solid #fff4c9; outline-offset: 3px; }
-    @keyframes shine { from { left: -55%; opacity: 0; } 12% { opacity: 1; } to { left: 130%; opacity: 0; } }
-    @keyframes ripple { to { transform: translate(-50%,-50%) scale(18); opacity: 0; } }
-    @keyframes breathe { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.06); } }
-    @keyframes count-pop { 0% { transform: scale(1); } 45% { transform: scale(1.32); color: #fff; text-shadow: 0 0 28px #ffc7ff; } 100% { transform: scale(1); } }
-    @keyframes card-bump { 35% { transform: scale(1.018); } 100% { transform: scale(1); } }
-    .card.bump { animation: card-bump .32s ease-out; }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-    }
+    #addButton::before { content: ""; position: absolute; z-index: -1; inset: 3px 8px auto; height: 43%; border-radius: 14px; background: linear-gradient(rgba(255,255,255,.96), rgba(255,255,255,.22), transparent); }
+    #addButton::after { content: ""; position: absolute; z-index: 1; top: -60%; bottom: -60%; left: -52%; width: 28%; transform: rotate(23deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.98), transparent); pointer-events: none; }
+    #addButton:hover { transform: translateY(-3px); filter: brightness(1.08) saturate(1.15); box-shadow: 0 1px 0 #fff inset, 0 -2px 0 rgba(53,121,146,.2) inset, 0 4px 0 #fff, 0 8px 0 #5291a8, 0 16px 27px rgba(45,99,119,.34), 0 0 38px rgba(255,255,255,.96); }
+    #addButton:hover::after { animation: flash .8s ease-out; }
+    #addButton:active { transform: translateY(5px); box-shadow: 0 1px 0 #fff inset, 0 -2px 0 rgba(53,121,146,.22) inset, 0 1px 0 #5291a8, 0 3px 8px rgba(45,99,119,.28); }
+    #addButton:focus-visible, .home-link:focus-visible { outline: 3px solid #e67c8c; outline-offset: 5px; }
+    .count { position: relative; display: inline-block; margin: 24px 0 8px; padding: 11px 18px; border: 1px solid rgba(255,255,255,.95); border-radius: 999px; background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(233,247,247,.58)); box-shadow: inset 0 1px 0 #fff, 0 4px 13px rgba(64,112,129,.13); color: #476d7c; font-size: .96rem; font-weight: 700; }
+    #count { color: #dd6878; font-size: 1.35rem; font-weight: 900; text-shadow: 0 1px #fff, 0 0 15px rgba(245,141,146,.48); }
+    .home-link { position: relative; display: block; width: fit-content; margin: 13px auto 0; padding: 8px 15px; border: 1px solid transparent; border-radius: 999px; color: #557987; font-size: .9rem; font-weight: 700; text-decoration: none; text-shadow: 0 1px #fff; transition: background .2s ease, border-color .2s ease; }
+    .home-link:hover { border-color: rgba(255,255,255,.85); background: rgba(255,255,255,.48); }
+    .caption { margin-top: 20px; color: rgba(54,91,105,.77); font-size: .68rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    .pop { animation: pop .35s cubic-bezier(.2,.8,.2,1); }
+    @keyframes flash { from { left: -52%; opacity: 0; } 15% { opacity: 1; } to { left: 125%; opacity: 0; } }
+    @keyframes pop { 45% { transform: scale(1.13); color: #e45e75; } }
+    @keyframes sun-turn { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @media (max-width: 480px) { body { padding: 15px; } .card { padding-inline: 16px; } #addButton { min-width: 205px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
-  <canvas id="lightCanvas" aria-hidden="true"></canvas>
-  <main class="card" id="card">
-    <h1>the Click</h1>
-    <p>Click here! You *KNOW* you WANT TO...</p>
-    <button id="addButton" type="button">CLICK</button>
-    <p class="count" aria-live="polite">People who clicked: <span id="count">0</span></p>
-    <a class="home-link" href="../index.html">Take me home</a>
+  <div class="sunflare" aria-hidden="true"></div>
+  <main class="window">
+    <div class="titlebar"><span>✦ the Click — sunny side up</span><span class="window-lights" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <section class="card">
+      <span class="badge">A little internet nostalgia · 2010</span>
+      <h1>the Click</h1>
+      <p class="subtitle">A tiny bit of sunshine for your day.<br>Go on — make the number go up!</p>
+      <div class="camera-frame"><button id="addButton" type="button">CLICK!</button></div>
+      <p class="count" aria-live="polite">Clicks collected: <span id="count">0</span></p>
+      <a class="home-link" href="../index.html">← Take me home</a>
+      <div class="caption">✦ keep clicking, keep glowing ✦</div>
+    </section>
   </main>
-
   <script>
     const button = document.getElementById('addButton');
     const countEl = document.getElementById('count');
-    const countLabel = document.querySelector('.count');
-    const card = document.getElementById('card');
-    const canvas = document.getElementById('lightCanvas');
-    const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'high-performance' });
     const storageKey = 'signgoings-count';
-    localStorage.removeItem(storageKey);
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let count = 0;
-    let width = 0, height = 0, frameId = 0, lastFrame = 0, startTime = performance.now();
-    let buttonCenter = [0, 0], buttonSize = [1, 1], pointer = [0, 0], audioContext;
-    let program, resolutionLocation, timeLocation, buttonLocation, buttonSizeLocation, pointerLocation;
 
+    function readCount() {
+      try {
+        const saved = Number.parseInt(localStorage.getItem(storageKey), 10);
+        return Number.isSafeInteger(saved) && saved >= 0 ? saved : 0;
+      } catch (error) {
+        return 0;
+      }
+    }
+
+    let count = readCount();
     countEl.textContent = count;
 
-    const vertexShaderSource = `
-      attribute vec2 a_position;
-      void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
-    `;
-
-    const fragmentShaderSource = `
-      precision highp float;
-      uniform vec2 u_resolution;
-      uniform float u_time;
-      uniform vec2 u_button;
-      uniform vec2 u_buttonSize;
-      uniform vec2 u_pointer;
-
-      float hash(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-      }
-
-      void main() {
-        vec2 pixel = gl_FragCoord.xy;
-        vec2 sun = vec2(u_resolution.x * 0.78, u_resolution.y * 0.82);
-        vec2 sunVector = (pixel - sun) / max(u_resolution.y, 1.0);
-        float distanceFromSun = length(sunVector);
-        float angle = atan(sunVector.y, sunVector.x);
-        float rotation = u_time * 0.055;
-
-        float rayFine = pow(max(0.0, cos(angle * 31.0 + rotation)), 24.0);
-        float rayWide = pow(max(0.0, cos(angle * 13.0 - rotation * 0.7)), 11.0);
-        float rayGlint = pow(max(0.0, cos(angle * 47.0 + rotation * 1.4)), 48.0);
-        float radialFade = 1.0 - smoothstep(0.08, 1.12, distanceFromSun);
-        float sunCore = exp(-distanceFromSun * 8.0);
-        float beams = (rayFine * 0.13 + rayWide * 0.075 + rayGlint * 0.055) * radialFade;
-
-        float buttonDistance = length((pixel - u_button) / max(u_buttonSize * vec2(0.82, 2.8), vec2(1.0)));
-        float buttonHalo = exp(-buttonDistance * 2.8) * (1.0 - smoothstep(1.25, 2.1, buttonDistance));
-        float pointerDistance = length((pixel - u_pointer) / max(u_resolution.y * 0.22, 1.0));
-        float pointerGlow = exp(-pointerDistance * 3.2) * 0.08;
-
-        float colorWave = 0.5 + 0.5 * sin(angle * 2.0 + u_time * 0.12 + distanceFromSun * 3.0);
-        vec3 warm = vec3(1.0, 0.49, 0.32);
-        vec3 pink = vec3(1.0, 0.30, 0.76);
-        vec3 cyan = vec3(0.31, 0.78, 1.0);
-        vec3 prism = mix(mix(warm, pink, smoothstep(0.12, 0.72, colorWave)), cyan, smoothstep(0.62, 1.0, colorWave));
-        vec3 color = prism * (beams + sunCore * 0.17);
-        color += vec3(1.0, 0.76, 0.44) * sunCore * 0.11;
-        color += mix(vec3(0.72, 0.43, 1.0), vec3(0.34, 0.82, 1.0), colorWave) * buttonHalo * 0.24;
-        color += vec3(1.0, 0.84, 0.98) * pointerGlow;
-
-        float alpha = clamp(beams * 0.9 + sunCore * 0.14 + buttonHalo * 0.3 + pointerGlow * 0.35, 0.0, 0.48);
-        float grain = (hash(floor(pixel * 0.5) + floor(u_time * 8.0)) - 0.5) * 0.008 * alpha;
-        color = max(color + grain, vec3(0.0));
-        gl_FragColor = vec4(color * alpha, alpha);
-      }
-    `;
-
-    function compileShader(type, source) {
-      const shader = gl.createShader(type);
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.warn('WebGL shader compilation failed:', gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    }
-
-    function initWebGL() {
-      if (!gl) return false;
-      const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
-      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
-      if (!vertexShader || !fragmentShader) return false;
-      program = gl.createProgram();
-      gl.attachShader(program, vertexShader);
-      gl.attachShader(program, fragmentShader);
-      gl.linkProgram(program);
-      gl.deleteShader(vertexShader);
-      gl.deleteShader(fragmentShader);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.warn('WebGL program linking failed:', gl.getProgramInfoLog(program));
-        return false;
-      }
-
-      gl.useProgram(program);
-      const vertices = new Float32Array([-1, -1, 3, -1, -1, 3]);
-      const buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-      const positionLocation = gl.getAttribLocation(program, 'a_position');
-      gl.enableVertexAttribArray(positionLocation);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-      resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-      timeLocation = gl.getUniformLocation(program, 'u_time');
-      buttonLocation = gl.getUniformLocation(program, 'u_button');
-      buttonSizeLocation = gl.getUniformLocation(program, 'u_buttonSize');
-      pointerLocation = gl.getUniformLocation(program, 'u_pointer');
-      gl.clearColor(0, 0, 0, 0);
-      return true;
-    }
-
-    function updateButtonPosition() {
-      const bounds = button.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      buttonCenter = [bounds.left * dpr + bounds.width * dpr / 2, (height - (bounds.top * dpr + bounds.height * dpr / 2))];
-      buttonSize = [bounds.width * dpr, bounds.height * dpr];
-      if (!pointer[0] && !pointer[1]) pointer = [...buttonCenter];
-    }
-
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      const pixelWidth = Math.round(width * dpr);
-      const pixelHeight = Math.round(height * dpr);
-      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-        canvas.width = pixelWidth;
-        canvas.height = pixelHeight;
-      }
-      if (gl && program) {
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.useProgram(program);
-        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-      }
-      updateButtonPosition();
-      render(performance.now());
-    }
-
-    function render(timestamp) {
-      if (!gl || !program) return;
-      gl.useProgram(program);
-      gl.uniform1f(timeLocation, (timestamp - startTime) * 0.001);
-      gl.uniform2f(buttonLocation, buttonCenter[0], buttonLocation[1]);
-      gl.uniform2f(buttonSizeLocation, buttonSize[0], buttonSize[1]);
-      gl.uniform2f(pointerLocation, pointer[0], pointer[1]);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
-
-    function animate(timestamp) {
-      frameId = 0;
-      if (document.hidden || reducedMotion.matches || !gl) return;
-      if (timestamp - lastFrame < 1000 / 60) { frameId = requestAnimationFrame(animate); return; }
-      lastFrame = timestamp;
-      render(timestamp);
-      frameId = requestAnimationFrame(animate);
-    }
-
-    function startAnimation() {
-      if (!reducedMotion.matches && !document.hidden && !frameId && gl) frameId = requestAnimationFrame(animate);
-    }
-
-    function playClickChime() {
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-        audioContext ||= new AudioContextClass();
-        if (audioContext.state === 'suspended') audioContext.resume();
-        const now = audioContext.currentTime;
-        [659.25, 987.77].forEach((frequency, index) => {
-          const oscillator = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          oscillator.type = 'sine';
-          oscillator.frequency.setValueAtTime(frequency, now + index * .055);
-          gain.gain.setValueAtTime(.0001, now + index * .055);
-          gain.gain.exponentialRampToValueAtTime(index ? .045 : .065, now + index * .055 + .012);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + index * .055 + .42);
-          oscillator.connect(gain); gain.connect(audioContext.destination);
-          oscillator.start(now + index * .055); oscillator.stop(now + index * .055 + .44);
-        });
-      } catch (error) {
-        // Optional audio; ignore if unsupported.
-      }
-    }
-
-    window.addEventListener('resize', resizeCanvas, { passive: true });
-    window.addEventListener('scroll', updateButtonPosition, { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden && frameId) { cancelAnimationFrame(frameId); frameId = 0; }
-      else startAnimation();
-    });
-    reducedMotion.addEventListener?.('change', () => {
-      if (reducedMotion.matches && frameId) { cancelAnimationFrame(frameId); frameId = 0; render(performance.now()); }
-      else startAnimation();
-    });
-
-    button.addEventListener('pointermove', (event) => {
-      const bounds = button.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      button.style.setProperty('--pointer-x', `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
-      button.style.setProperty('--pointer-y', `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
-      pointer = [event.clientX * dpr, (height - event.clientY) * dpr];
-      if (reducedMotion.matches) render(performance.now());
-    }, { passive: true });
-
-    button.addEventListener('click', (event) => {
-      playClickChime();
+    button.addEventListener('click', () => {
       count += 1;
-      localStorage.setItem(storageKey, String(count));
       countEl.textContent = count;
-      countLabel.classList.remove('pop');
-      card.classList.remove('bump');
-      void countLabel.offsetWidth;
-      countLabel.classList.add('pop');
-      card.classList.add('bump');
-
-      const bounds = button.getBoundingClientRect();
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      ripple.setAttribute('aria-hidden', 'true');
-      ripple.style.left = `${event.clientX - bounds.left}px`;
-      ripple.style.top = `${event.clientY - bounds.top}px`;
-      button.appendChild(ripple);
-      ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+      try {
+        localStorage.setItem(storageKey, String(count));
+      } catch (error) {
+        // Keep the counter working for this page view if storage is unavailable.
+      }
+      countEl.classList.remove('pop');
+      void countEl.offsetWidth;
+      countEl.classList.add('pop');
     });
-
-    if (!initWebGL()) canvas.style.display = 'none';
-    resizeCanvas();
-    startAnimation();
   </script>
 </body>
 </html>
